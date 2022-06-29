@@ -32,10 +32,10 @@ export default ({ children }) => (
         justify-content: space-around;
         padding: 1em;
         font-size: 1.2rem;
-        background: #9867c5;
+        background: #b8d1d9;
       }
       header a {
-        color: darkgrey;
+        color: #7d30e2;
         text-decoration: none;
       }
       header a:hover {
@@ -48,3 +48,6 @@ export default ({ children }) => (
     `}</style>
   </div>
 );
+
+// colors generatated with Korma ai:
+// http://khroma.co/generator/
