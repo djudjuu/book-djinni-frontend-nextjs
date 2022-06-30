@@ -13,16 +13,24 @@ function Play({ categories }) {
     <Layout>
       <div>
         <div>Engaged Djinni image </div>
-        <div>{categories}</div>
+        <div>{JSON.stringify(categories)}</div>
       </div>
     </Layout>
   );
 }
 
 export async function getServerSideProps() {
+  const url = "http:localhost:8000/api/v1/categories";
+  const res = await fetch(url);
+  const categories = await res.json();
+  // get unique names from the categories array
+  const uniqueNames = [...new Set(categories.map((item) => item.name))];
+  get;
+
+  console.log("fetched", categories);
   return {
     props: {
-      categories: ["sdsf", "sdfsdf", "sdfsdf"],
+      categories,
     },
   };
 }
