@@ -8,6 +8,7 @@ import Layout from "components/Layout";
 function Play({ categories }) {
   console.log("hsdf", JSON.stringify(categories));
   const [filters, setFilters] = useState([]);
+  const [choices, setChoices] = useState({});
 
   return (
     <Layout>
@@ -22,14 +23,25 @@ function Play({ categories }) {
 export async function getServerSideProps() {
   const url = "http:localhost:8000/api/v1/categories";
   const res = await fetch(url);
-  const categories = await res.json();
+  const categoriesWithBooks = await res.json();
   // get unique names from the categories array
-  const uniqueNames = [...new Set(categories.map((item) => item.name))];
-  get;
+  const categoryNames = [
+    ...new Set(categoriesWithBooks.map((item) => item.name)),
+  ];
+  // for each name in uniqueNames, get a list of all values that match that name
+  const categories = categoryNames.map((name) => {
+    return {
+      [name]: categoriesWithBooks
+        .filter((item) => item.name === name)
+        .map((item) => item.value),
+    };
+  });
+  // console.log(categoryValues);
 
-  console.log("fetched", categories);
+  // console.log("fetched", categories);
   return {
     props: {
+      categoriesWithBooks,
       categories,
     },
   };
