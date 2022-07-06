@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
+import BookCard from "./BookCard";
 
 const FilterCard = ({ allBooks, categories }) => {
   // if categories is empty, return null
@@ -78,8 +79,12 @@ const FilterCard = ({ allBooks, categories }) => {
           {/* // if nextCategories is empty, we are done */}
           {nextCategories.length === 0 && (
             <div>
-              <span>You have selected all the books you'd like.</span>
-              <span>Here they are TODO</span>
+              <span>These are the books you have selected:</span>
+              <div>
+                {books.map((book) => (
+                  <BookCard key={book.id} book={book} />
+                ))}
+              </div>
             </div>
           )}
           {/* // if nextCategories is not empty, we need to show the next category */}
