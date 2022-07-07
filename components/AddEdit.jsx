@@ -1,8 +1,14 @@
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
+import axios from "axios";
+import { useEffect } from "react";
 
-const AddEdit = () => {
+const baseUrl = process.env.NEXT_PUBLIC_BACKEND;
+
+const AddEdit = ({ book }) => {
+  // log props to console
+  console.log("book", book);
   const router = useRouter();
   const { id } = router.query;
   const isAddMode = !id;
@@ -14,25 +20,63 @@ const AddEdit = () => {
     isbn: Yup.string(),
   });
 
+  const defaultValues = isAddMode
+    ? {}
+    : { title: book.title, author: book.author, isbn: book.isbn };
+
   // useForm hook to handle form validation and data
-  const { register, handleSubmit, errors, setValue } = useForm({
+  const {
+    register,
+    handleSubmit,
+    errors,
+    setValue,
+    reset,
+    formState,
+    formState: { isSubmitSuccessful },
+  } = useForm({
     validationSchema: schema,
     mode: "onChange",
-    defaultValues: {
-      title: "",
-      author: "",
-      isbn: "",
-    },
+    defaultValues: defaultValues,
+    // {
+    //   title: "title",
+    //   author: "author",
+    //   isbn: "",
+    // },
   });
 
-  const onSubmit = (data) => {
-    console.log("haaa", data);
+  // useEffect to reset form when isSubmitSuccessful is true
+  useEffect(() => {
+    console.log("form is", formState);
+    if (isSubmitSuccessful) {
+      console.log("isSubmitSuccessful here", isSubmitSuccessful);
+      if (isAddMode) {
+        reset(defaultValues);
+      }
+    }
+  }, [isSubmitSuccessful, formState]);
+
+  const onSubmit = async (data) => {
+    if (isAddMode) addBook(data);
+    else updateBook(data);
+  };
+
+  // async function to add a book by adding a book to the api
+  const addBook = async (data) => {
+    // send post request to api with axios putting title, author, and isbn in the body
+    const res = await axios.post(`${baseUrl}/api/v1/books`, data);
+    alert("Book added successfully");
+  };
+
+  // async function to update a book by adding a book to the api
+  const updateBook = async (data) => {
+    // send post request to api with axios putting title, author, and isbn in the body
+    const res = await axios.put(`${baseUrl}/api/v1/books/${id}`, data);
+    alert("Book updated successfully");
   };
 
   // return a form to enter author, title and isbn
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} onReset={reset}>
       <label>Title:</label>
       <input
         name="title"
@@ -58,11 +102,11 @@ const AddEdit = () => {
         name="isbn"
         {...register("isbn", { required: false })}
         defaultValue={isAddMode ? "" : id}
-        placeholder="ISBN"
+        placeholder="ISBN (optional)"
         type="text"
       />
       {errors?.isbn && <p>{errors.isbn.message}</p>}
-      <button type="submit">Save</button>
+      <button type="submit"> {isAddMode ? "Add" : "Edit"}</button>
     </form>
   );
 
