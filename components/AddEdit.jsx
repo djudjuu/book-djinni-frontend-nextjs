@@ -65,6 +65,8 @@ const AddEdit = ({ book, categories }) => {
     // send post request to api with axios putting title, author, and isbn in the body
     const res = await axios.post(`${baseUrl}/api/v1/books`, data);
     alert("Book added successfully");
+    // redirect to /book?id=${res.data.id}
+    router.push(`/book?id=${res.data.id}`);
   };
 
   // async function to update a book by adding a book to the api
@@ -127,10 +129,8 @@ const AddEdit = ({ book, categories }) => {
                   : book.categories.some((c) => c.id === category.id)
               }
             />
-            <span>
-              {category.name}: {category.value}
-            </span>
-            {/* <span> {category.value} </span> */}
+            {/* <span> {category.name}: {category.value} </span> */}
+            <span> {category.value} </span>
           </div>
         ))}
       {/* // {errors?.categories && <p>{errors.categories.message}</p>} */}
