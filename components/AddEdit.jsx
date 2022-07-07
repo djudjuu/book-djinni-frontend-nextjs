@@ -2,13 +2,12 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND;
 
-const AddEdit = ({ book }) => {
+const AddEdit = ({ book, categories }) => {
   // log props to console
-  console.log("book", book);
   const router = useRouter();
   const { id } = router.query;
   const isAddMode = !id;
@@ -18,11 +17,17 @@ const AddEdit = ({ book }) => {
     title: Yup.string().required("Title is required"),
     author: Yup.string().required("Author is required"),
     isbn: Yup.string(),
+    categories: Yup.array(),
   });
 
   const defaultValues = isAddMode
-    ? {}
-    : { title: book.title, author: book.author, isbn: book.isbn };
+    ? { categories: [] }
+    : {
+        title: book.title,
+        author: book.author,
+        isbn: book.isbn,
+        categories: book.categories.map((c) => c.id),
+      };
 
   // useForm hook to handle form validation and data
   const {
@@ -37,18 +42,11 @@ const AddEdit = ({ book }) => {
     validationSchema: schema,
     mode: "onChange",
     defaultValues: defaultValues,
-    // {
-    //   title: "title",
-    //   author: "author",
-    //   isbn: "",
-    // },
   });
 
   // useEffect to reset form when isSubmitSuccessful is true
   useEffect(() => {
-    console.log("form is", formState);
     if (isSubmitSuccessful) {
-      console.log("isSubmitSuccessful here", isSubmitSuccessful);
       if (isAddMode) {
         reset(defaultValues);
       }
@@ -56,6 +54,8 @@ const AddEdit = ({ book }) => {
   }, [isSubmitSuccessful, formState]);
 
   const onSubmit = async (data) => {
+    // log data to console
+    // console.log("data", JSON.stringify(data));
     if (isAddMode) addBook(data);
     else updateBook(data);
   };
@@ -97,6 +97,7 @@ const AddEdit = ({ book }) => {
         required
       />
       {errors?.author && <p>{errors.author.message}</p>}
+      <br />
       <label>ISBN:</label>
       <input
         name="isbn"
@@ -106,6 +107,33 @@ const AddEdit = ({ book }) => {
         type="text"
       />
       {errors?.isbn && <p>{errors.isbn.message}</p>}
+      <br />
+      <label>Categories:</label>
+      {/* // map over categories creating a checkbox for each category, displaying
+      // the category name and value. //when a checkbox is clicked the id of the
+      category should be added or removed from the form data */}
+      {categories
+        // .sort((a, b) => a.name > b.name)
+        .map((category) => (
+          <div key={category.id}>
+            <input
+              name="categories"
+              {...register("categories", { required: true })}
+              type="checkbox"
+              value={category.id}
+              defaultChecked={
+                isAddMode
+                  ? false
+                  : book.categories.some((c) => c.id === category.id)
+              }
+            />
+            <span>
+              {category.name}: {category.value}
+            </span>
+            {/* <span> {category.value} </span> */}
+          </div>
+        ))}
+      {/* // {errors?.categories && <p>{errors.categories.message}</p>} */}
       <button type="submit"> {isAddMode ? "Add" : "Edit"}</button>
     </form>
   );
