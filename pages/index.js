@@ -8,6 +8,10 @@ export default function Home() {
       <Link href="/play">
         <a>Play</a>
       </Link>
+      <br />
+      <Link href="/book">
+        <a>See all Books</a>
+      </Link>
     </Layout>
   );
 }

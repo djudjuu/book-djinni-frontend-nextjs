@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import AddEdit from "components/AddEdit";
 import Layout from "components/Layout";
 import axios from "axios";
+import BookTable from "components/BookTable";
 
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND;
 
