@@ -78,34 +78,43 @@ function Play({ categories, books }) {
 }
 
 export async function getServerSideProps() {
-  const book_url = "http:localhost:8000/api/v1/books";
-  const res1 = await fetch(book_url);
-  const books = await res1.json();
+  try {
+    const book_url = "http:localhost:8000/api/v1/books";
+    const res1 = await fetch(book_url);
+    const books = await res1.json();
 
-  const url = "http:localhost:8000/api/v1/categories";
-  const res = await fetch(url);
-  const categoriesWithBooks = await res.json();
-  // get unique names from the categories array
-  const categoryNames = [
-    ...new Set(categoriesWithBooks.map((item) => item.name)),
-  ];
-  // for name in categoryNames ad all unique values for that name to categories object
-  let categories = {};
-  categoryNames.forEach((name) => {
-    categories[name] = {
-      name,
-      values: categoriesWithBooks
-        .filter((item) => item.name === name)
-        .map((item) => item.value),
+    const url = "http:localhost:8000/api/v1/categories";
+    const res = await fetch(url);
+    const categoriesWithBooks = await res.json();
+    // get unique names from the categories array
+    const categoryNames = [
+      ...new Set(categoriesWithBooks.map((item) => item.name)),
+    ];
+    // for name in categoryNames ad all unique values for that name to categories object
+    let categories = {};
+    categoryNames.forEach((name) => {
+      categories[name] = {
+        name,
+        values: categoriesWithBooks
+          .filter((item) => item.name === name)
+          .map((item) => item.value),
+      };
+    });
+
+    return {
+      props: {
+        categories,
+        books,
+      },
     };
-  });
-
-  return {
-    props: {
-      categories,
-      books,
-    },
-  };
+  } catch {
+    return {
+      redirect: {
+        destination: "/error",
+        permanent: false,
+      },
+    };
+  }
 }
 
 export default Play;

@@ -3,10 +3,15 @@ import Layout from "components/Layout";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import axios from "axios";
+import Error from "../_error";
 
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND;
 
-const ListBooks = ({ books }) => {
+const ListBooks = ({ books, error }) => {
+  // if (error) {
+  //   return <Error statusCode={error.status} />;
+  // }
+
   const router = useRouter();
 
   // function to push to edit page
@@ -38,8 +43,23 @@ export default ListBooks;
 
 export async function getServerSideProps({ req, res, query }) {
   const book_url = `${baseUrl}/api/v1/books`;
-  // fetch data from book_url and save it to books
-  const books = await fetch(book_url).then((res) => res.json());
-  // return the books in the props
-  return { props: { books } };
+
+  // try to fetch data from book_url and return as props
+  // if fails, return error
+  try {
+    const books = await fetch(book_url);
+    return {
+      props: {
+        books: books.data,
+      },
+    };
+  } catch (error) {
+    console.log("err", error);
+    return {
+      redirect: {
+        destination: "/error",
+        permanent: false,
+      },
+    };
+  }
 }
