@@ -47,10 +47,13 @@ export async function getServerSideProps({ req, res, query }) {
   // try to fetch data from book_url and return as props
   // if fails, return error
   try {
-    const books = await fetch(book_url);
+    const response = await fetch(book_url);
+    // log the response
+    const books = await response.json();
     return {
       props: {
-        books: books.data,
+        books,
+        error: false,
       },
     };
   } catch (error) {
