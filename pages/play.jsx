@@ -6,6 +6,8 @@ import Layout from "components/Layout";
 import FilterCard from "components/FilterCard";
 // import { useEffect, useState } from "react";
 
+const baseUrl = process.env.NEXT_PUBLIC_BACKEND;
+
 function Play({ categories, books }) {
   const [filters, setFilters] = useState([]);
   const toggleSelection = (categoryName) => {
@@ -79,11 +81,11 @@ function Play({ categories, books }) {
 
 export async function getServerSideProps() {
   try {
-    const book_url = "http:localhost:8000/api/v1/books";
+    const book_url = `${baseUrl}/api/v1/books`;
     const res1 = await fetch(book_url);
     const books = await res1.json();
 
-    const url = "http:localhost:8000/api/v1/categories";
+    const url = `${baseUrl}/api/v1/categories`;
     const res = await fetch(url);
     const categoriesWithBooks = await res.json();
     // get unique names from the categories array
