@@ -50,7 +50,7 @@ function Play({ categories, books }) {
             {Object.values(categories)
               .sort(sortCategories)
               .map((category) => (
-                <li>
+                <li key={category.name}>
                   <button
                     onClick={() => toggleSelection(category.name)}
                     //{isSelected(category) ? "red" : "green"}
