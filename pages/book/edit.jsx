@@ -34,7 +34,5 @@ export default Book;
 export async function getServerSideProps({ req, res, query }) {
   // 1) get all categories from api
   let props = { bookId: query.id || null };
-  // log props
-  console.log("props", props);
   return { props };
 }

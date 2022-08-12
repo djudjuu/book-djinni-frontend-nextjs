@@ -9,7 +9,6 @@ const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND}/api/v1`;
 
 const AddEdit = ({ bookId, book, categories }) => {
   const { mutate } = useSWRConfig();
-  // log props to console for debugging
   const router = useRouter();
   const isAddMode = !bookId;
 
