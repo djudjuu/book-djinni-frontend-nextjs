@@ -15,7 +15,9 @@ export const useBooks = () => {
 export const useBook = (id) => {
   if (!id) return { isLoading: false, error: false, book: null };
 
-  const { data, error } = useSWR(`/books/${id}`, fetcher);
+  const { data, error } = useSWR(`/books/${id}`, fetcher, {
+    refreshInterval: 5000,
+  });
   // log data
   // console.log("in bookhook", data);
 
@@ -27,7 +29,9 @@ export const useBook = (id) => {
 };
 
 export const useCategories = () => {
-  const { data, error } = useSWR(`/categories`, fetcher);
+  const { data, error } = useSWR(`/categories`, fetcher, {
+    refreshInterval: 5000,
+  });
 
   const categoriesWithBooks = data?.data || [];
   // categories from this endpoint also have a list of books that fit them, so
@@ -48,7 +52,9 @@ export const useCategories = () => {
 };
 
 export const useCategoriesWithBooks = () => {
-  const { data, error } = useSWR(`/categories`, fetcher);
+  const { data, error } = useSWR(`/categories`, fetcher, {
+    refreshInterval: 5000,
+  });
 
   const categoriesWithBooks = data?.data || [];
   const categoryNames = [
