@@ -5,11 +5,27 @@ import { useRouter } from "next/router";
 import Layout from "components/Layout";
 import FilterCard from "components/FilterCard";
 // import { useEffect, useState } from "react";
+import { useBooks, useCategoriesWithBooks } from "utils/hooks";
 
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND;
 
-function Play({ categories, books }) {
+function Play() {
+  const { books, error: booksError, isLoading: booksLoading } = useBooks();
+  const { categories, categoriesError, categoriesLoading } =
+    useCategoriesWithBooks();
+
   const [filters, setFilters] = useState([]);
+
+  // if categories are loading, show loading message
+  if (categoriesLoading || booksLoading) {
+    return <div>Loading...</div>;
+  }
+
+  // if error, render error message
+  if (booksError || categoriesError) {
+    return <div>Error</div>;
+  }
+
   const toggleSelection = (categoryName) => {
     const newFilters = [...filters];
     if (isSelected(categoryName)) {
@@ -77,46 +93,6 @@ function Play({ categories, books }) {
       </div>
     </Layout>
   );
-}
-
-export async function getServerSideProps() {
-  try {
-    const book_url = `${baseUrl}/api/v1/books`;
-    const res1 = await fetch(book_url);
-    const books = await res1.json();
-
-    const url = `${baseUrl}/api/v1/categories`;
-    const res = await fetch(url);
-    const categoriesWithBooks = await res.json();
-    // get unique names from the categories array
-    const categoryNames = [
-      ...new Set(categoriesWithBooks.map((item) => item.name)),
-    ];
-    // for name in categoryNames ad all unique values for that name to categories object
-    let categories = {};
-    categoryNames.forEach((name) => {
-      categories[name] = {
-        name,
-        values: categoriesWithBooks
-          .filter((item) => item.name === name)
-          .map((item) => item.value),
-      };
-    });
-
-    return {
-      props: {
-        categories,
-        books,
-      },
-    };
-  } catch {
-    return {
-      redirect: {
-        destination: "/error",
-        permanent: false,
-      },
-    };
-  }
 }
 
 export default Play;

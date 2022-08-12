@@ -8,7 +8,7 @@ export const useBooks = () => {
   return {
     books: data?.data || [],
     isLoading: !error && !data,
-    isError: error,
+    error: error,
   };
 };
 
@@ -22,7 +22,7 @@ export const useBook = (id) => {
   return {
     book: data?.data || {},
     isLoading: !error && !data,
-    isError: error,
+    error: error,
   };
 };
 
@@ -33,6 +33,7 @@ export const useCategories = () => {
   // categories from this endpoint also have a list of books that fit them, so
   // remove key "books" from all objects in categoriesWithBooks
   const categories = categoriesWithBooks
+    // .filter((category) => category.books && category.books.length > 0)
     .map((category) => {
       delete category.books;
       return category;
@@ -46,12 +47,16 @@ export const useCategories = () => {
   };
 };
 
-export const useBooksAndCategories = () => {
+export const useCategoriesWithBooks = () => {
   const { data, error } = useSWR(`/categories`, fetcher);
 
   const categoriesWithBooks = data?.data || [];
   const categoryNames = [
-    ...new Set(categoriesWithBooks.map((item) => item.name)),
+    ...new Set(
+      categoriesWithBooks
+        .filter((x) => x.books && x.books.length > 0)
+        .map((item) => item.name)
+    ),
   ];
   // for name in categoryNames ad all unique values for that name to categories object
   let categories = {};
@@ -65,5 +70,7 @@ export const useBooksAndCategories = () => {
   });
   return {
     categories,
+    categoriesLoading: !error && !data,
+    categoriesError: error,
   };
 };

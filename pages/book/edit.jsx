@@ -10,7 +10,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BACKEND;
 // component that adds a book by making a post request to the api
 function Book({ bookId }) {
   const { categories, categoriesError, categoriesLoading } = useCategories();
-  const { book, bookError, bookLoading } = useBook(bookId);
+  const { book, error: bookError, isLoading: bookLoading } = useBook(bookId);
 
   // if categories are loading, show loading message
   if (categoriesLoading || bookLoading) {
