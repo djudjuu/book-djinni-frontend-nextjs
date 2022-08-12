@@ -54,18 +54,21 @@ const FilterCard = ({ allBooks, categories }) => {
   };
 
   // return a list of buttons for each value in the categoryToShow
-  const buttons = categoryToShow.values.map((value) => (
-    <button
-      key={value}
-      onClick={() => toggleSelection(value)}
-      style={{
-        backgroundColor: choices.includes(value) ? "green" : "white",
-        color: choices.includes(value) ? "white" : "black",
-      }}
-    >
-      {value} ({countBooksOfCategory(categoryToShow.name, value)})
-    </button>
-  ));
+  const buttons = categoryToShow.values.map((value) => {
+    const bookCount = countBooksOfCategory(categoryToShow.name, value);
+    return bookCount > 0 ? (
+      <button
+        key={value}
+        onClick={() => toggleSelection(value)}
+        style={{
+          backgroundColor: choices.includes(value) ? "green" : "white",
+          color: choices.includes(value) ? "white" : "black",
+        }}
+      >
+        {value} ({bookCount})
+      </button>
+    ) : null;
+  });
   return (
     <div>
       <h3>Select by {categoryToShow.name}</h3>
