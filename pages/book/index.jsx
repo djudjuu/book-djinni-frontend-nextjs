@@ -4,25 +4,28 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import axios from "axios";
 import Error from "../_error";
+import { useBooks } from "utils/hooks";
+import useSWR, { useSWRConfig } from "swr";
 
-const baseUrl = process.env.NEXT_PUBLIC_BACKEND;
+const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND}/api/v1`;
 
-const ListBooks = ({ books, error }) => {
-  // if (error) {
-  //   return <Error statusCode={error.status} />;
-  // }
-
+const ListBooks = () => {
+  const { mutate } = useSWRConfig();
   const router = useRouter();
 
   // function to push to edit page
   const editBook = (book) => {
     router.push(`/book/edit?id=${book.id}`);
+    mutate("/books");
   };
 
   // function to deleteBook by making a delete request to the api
   const deleteBook = async (book) => {
-    const url = `${baseUrl}/api/v1/books/${book.id}`;
+    const url = `${baseUrl}/books/${book.id}`;
     const res = await axios.delete(url);
+
+    // trigger refetch of books
+    mutate("/books");
     if (res.status === 200) {
       // redirect to /book
       router.push("/book");
@@ -31,38 +34,13 @@ const ListBooks = ({ books, error }) => {
 
   return (
     <Layout>
-      <Link as={"/add"} href="/book/edit">
+      {/* <Link as={"/add"} href="/book/edit"> */}
+      <Link href="/book/edit">
         <a>Add a new book</a>
       </Link>
-      <BookTable books={books} editBook={editBook} deleteBook={deleteBook} />
+      <BookTable editBook={editBook} deleteBook={deleteBook} />
     </Layout>
   );
 };
 
 export default ListBooks;
-
-export async function getServerSideProps({ req, res, query }) {
-  const book_url = `${baseUrl}/api/v1/books`;
-
-  // try to fetch data from book_url and return as props
-  // if fails, return error
-  try {
-    const response = await fetch(book_url);
-    // log the response
-    const books = await response.json();
-    return {
-      props: {
-        books,
-        error: false,
-      },
-    };
-  } catch (error) {
-    console.log("err", error);
-    return {
-      redirect: {
-        destination: "/error",
-        permanent: false,
-      },
-    };
-  }
-}

@@ -144,18 +144,6 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.1.4.tgz#0c8b74c50f29ee44f423f7416829c0bf8bb5eb27"
   integrity sha512-LwzQKA4vzIct1zNZzBmRKI9QuNpLgTQMEjsQLf3BXuGYb3QPTP4Yjf6mkdX+X1mYttZ808QpOwAzZjv28kq7DA==
 
-"@tanstack/react-table@^8.1.4":
-  version "8.1.4"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-table/-/react-table-8.1.4.tgz#84fb62852afbad0fa8a5643207b529530a1c5813"
-  integrity sha512-WpPrZVbwrom2+8wZaM94OkVPfhMyzYvxyxPk2xfyFexjGorKl5erI/EnMme1EXTltsND5Jhsq/wnU6medaOQ9w==
-  dependencies:
-    "@tanstack/table-core" "8.1.4"
-
-"@tanstack/table-core@8.1.4":
-  version "8.1.4"
-  resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.1.4.tgz#799b2bc4ced5d8c4ee099ece513270c1b73f16a7"
-  integrity sha512-iSlAT2BpkBFayJBgVxqQNXOgnF2S1r8b3aS1QlRGIusc4iZP0lRr0ie0CJ7Jhp0BZ62UH10RBIoBYHVYkg8Ejw==
-
 "@types/json5@^0.0.29":
   version "0.0.29"
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
@@ -1700,6 +1688,11 @@ supports-preserve-symlinks-flag@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
+
+swr@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/swr/-/swr-1.3.0.tgz#c6531866a35b4db37b38b72c45a63171faf9f4e8"
+  integrity sha512-dkghQrOl2ORX9HYrMDtPa7LTVHJjCTeZoB1dqTbnnEDlSvN8JEKpYIYurDfvbQFUUS8Cg8PceFVZNkW0KNNYPw==
 
 text-table@^0.2.0:
   version "0.2.0"

@@ -1,8 +1,19 @@
 import Table from "rc-table";
 import router from "next/router";
+import { useBooks } from "utils/hooks";
 
 // component to present all books in a table
-const BookTable = ({ books, deleteBook, editBook }) => {
+const BookTable = ({ deleteBook, editBook }) => {
+  const { books, error, isLoading } = useBooks();
+
+  if (error) {
+    return <Error statusCode={error.status} />;
+  }
+
+  if (isLoading) {
+    return <div> loading...</div>;
+  }
+
   const columns = [
     { title: "Title", dataIndex: "title", key: "title" },
     { title: "Author", dataIndex: "author", key: "author" },
@@ -10,6 +21,8 @@ const BookTable = ({ books, deleteBook, editBook }) => {
     { title: "Categories", dataIndex: "categories", key: "categories" },
     { title: "Actions", dataIndex: "actions", key: "actions" },
   ];
+  // log books to console for debugging
+  console.log("books", books);
 
   const data = books.map((book) => ({
     key: book.id,

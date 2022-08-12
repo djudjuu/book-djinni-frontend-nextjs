@@ -3,21 +3,23 @@ import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import useSWR, { useSWRConfig } from "swr";
 
-const baseUrl = process.env.NEXT_PUBLIC_BACKEND;
+const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND}/api/v1`;
 
-const AddEdit = ({ book, categories }) => {
-  // log props to console
+const AddEdit = ({ bookId, book, categories }) => {
+  const { mutate } = useSWRConfig();
+  // log props to console for debugging
   const router = useRouter();
-  const { id } = router.query;
-  const isAddMode = !id;
+  const isAddMode = !bookId;
 
   // yup validation schema for title and author and optional isbn
   const schema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
     author: Yup.string().required("Author is required"),
     isbn: Yup.string(),
-    categories: Yup.array(),
+    // require categories as an array of lenght > 0
+    categories: Yup.array(), //.min(1, "At least one category is required"),
   });
 
   const defaultValues = isAddMode
@@ -26,7 +28,7 @@ const AddEdit = ({ book, categories }) => {
         title: book.title,
         author: book.author,
         isbn: book.isbn,
-        categories: book.categories.map((c) => c.id),
+        categories: book.categories?.map((c) => c.id) || [],
       };
 
   // useForm hook to handle form validation and data
@@ -67,15 +69,18 @@ const AddEdit = ({ book, categories }) => {
   // async function to add a book by adding a book to the api
   const addBook = async (data) => {
     // send post request to api with axios putting title, author, and isbn in the body
-    const res = await axios.post(`${baseUrl}/api/v1/books`, data);
-    alert("Book added successfully");
+    // const updateFn = () => axios.post(`${baseUrl}/books`, data);
+    // mutate("/books", updateFn);
+
+    await axios.post(`${baseUrl}/books`, data);
+    mutate("/books");
   };
 
   // async function to update a book by adding a book to the api
   const updateBook = async (data) => {
     // send post request to api with axios putting title, author, and isbn in the body
-    const res = await axios.put(`${baseUrl}/api/v1/books/${id}`, data);
-    alert("Book updated successfully");
+    const updateFn = () => axios.put(`${baseUrl}/books/${bookId}`, data);
+    mutate(`/books/${bookId}`, updateFn);
   };
 
   // return a form to enter author, title and isbn
@@ -87,7 +92,7 @@ const AddEdit = ({ book, categories }) => {
         <input
           name="title"
           {...register("title", { required: true })}
-          defaultValue={isAddMode ? "" : id}
+          defaultValue={isAddMode ? "" : book.title}
           placeholder="Title"
           type="text"
           required
@@ -97,7 +102,7 @@ const AddEdit = ({ book, categories }) => {
         <input
           name="author"
           {...register("author", { required: true })}
-          defaultValue={isAddMode ? "" : id}
+          defaultValue={isAddMode ? "" : book.author}
           placeholder="Author"
           type="text"
           required
@@ -108,7 +113,7 @@ const AddEdit = ({ book, categories }) => {
         <input
           name="isbn"
           {...register("isbn", { required: false })}
-          defaultValue={isAddMode ? "" : id}
+          defaultValue={isAddMode ? "" : book.isbn}
           placeholder="ISBN (optional)"
           type="text"
         />
@@ -124,20 +129,21 @@ const AddEdit = ({ book, categories }) => {
             <div key={category.id}>
               <input
                 name="categories"
-                {...register("categories", { required: true })}
+                {...register("categories", { required: false })}
                 type="checkbox"
                 value={category.id}
                 defaultChecked={
                   isAddMode
                     ? false
-                    : book.categories.some((c) => c.id === category.id)
+                    : book.categories?.some((c) => c.id === category.id) ||
+                      false
                 }
               />
               {/* <span> {category.name}: {category.value} </span> */}
               <span> {category.value} </span>
             </div>
           ))}
-        {/* // {errors?.categories && <p>{errors.categories.message}</p>} */}
+        {errors?.categories && <p>{errors.categories.message}</p>}
         <button type="submit"> {isAddMode ? "Add" : "Edit"}</button>
       </form>
     </div>
