@@ -37,6 +37,9 @@ export default Book;
 
 export async function getServerSideProps({ req, res, query }) {
   const bookId = query.id;
+  if (!bookId) {
+    return { props: { book: null, bookId: null } };
+  }
   try {
     const book = await backendFetcher.get(`/books/${bookId}`);
     return {
