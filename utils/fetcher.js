@@ -67,7 +67,6 @@ export class Fetcher {
 
   fetch(url, params, method = "GET") {
     if (this.baseURL) url = this.baseURL + url;
-    // log url and body
     return Fetcher._fetch({ url, params, headers: this.headers, method });
   }
 
