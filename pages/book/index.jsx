@@ -23,7 +23,7 @@ const ListBooks = () => {
     const res = await axios.delete(`/api/books/${book.id}`);
 
     // trigger refetch of books
-    mutate("/books");
+    mutate("/api/books");
     if (res.status === 200) {
       // redirect to /book
       router.push("/book");

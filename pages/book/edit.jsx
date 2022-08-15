@@ -24,7 +24,8 @@ function Book({ bookId }) {
 
   return (
     <Layout>
-      <AddEdit bookId={bookId} book={book} categories={categories} />
+      {/* <AddEdit bookId={bookId} book={book} categories={categories} /> */}
+      <AddEdit bookId={bookId} categories={categories} />
     </Layout>
   );
 }

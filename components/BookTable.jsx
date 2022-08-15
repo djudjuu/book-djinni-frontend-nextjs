@@ -22,7 +22,7 @@ const BookTable = ({ deleteBook, editBook }) => {
     { title: "Actions", dataIndex: "actions", key: "actions" },
   ];
   // log books to console for debugging
-  console.log("books", books);
+  // console.log("books", books);
 
   const data = books.map((book) => ({
     key: book.id,

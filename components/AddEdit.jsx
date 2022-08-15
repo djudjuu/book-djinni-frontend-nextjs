@@ -4,13 +4,23 @@ import * as Yup from "yup";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import useSWR, { useSWRConfig } from "swr";
+import { useBook } from "utils/hooks";
 
 const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND}/api/v1`;
 
-const AddEdit = ({ bookId, book, categories }) => {
+const AddEdit = ({ bookId, categories }) => {
+  const { book, isLoading, error } = useBook(bookId);
+  console.log("book from hook", book);
   const { mutate } = useSWRConfig();
   const router = useRouter();
   const isAddMode = !bookId;
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>Error...</div>;
+  }
 
   // yup validation schema for title and author and optional isbn
   const schema = Yup.object().shape({
@@ -27,7 +37,7 @@ const AddEdit = ({ bookId, book, categories }) => {
         title: book.title,
         author: book.author,
         isbn: book.isbn,
-        categories: book.categories?.map((c) => c.id) || [],
+        categories: book.categories, //?.map((c) => c.id) || [],
       };
 
   // useForm hook to handle form validation and data
@@ -69,19 +79,27 @@ const AddEdit = ({ bookId, book, categories }) => {
   const addBook = async (data) => {
     // send post request to api with axios putting title, author, and isbn in the body
     // const updateFn = () => axios.post(`${baseUrl}/books`, data);
-    // mutate("/books", updateFn);
+    // mutate("/api/books", updateFn);
 
     await axios.post(`/api/books`, data);
-    mutate("/books");
+    mutate("/api/books");
   };
 
   // async function to update a book by adding a book to the api
   const updateBook = async (data) => {
     // send post request to api with axios putting title, author, and isbn in the body
     // const updateFn = () => axios.put(`${baseUrl}/books/${bookId}`, data);
-    const updateFn = () => axios.put(`/api/books/${bookId}`, data);
-    mutate(`/books/${bookId}`, updateFn);
+    // const updateFn = () => axios.put(`/api/books/${bookId}`, data);
+    // const options = { revalidate: true };
+    // mutate(`/api/books/${bookId}`, updateFn(), options); //, data);
+    // console.log("new data", data);
+    await axios.put(`/api/books/${bookId}`, data);
+    mutate(`/api/books/${bookId}`, { ...data }); //, data);
+    mutate(`/api/books`);
   };
+
+  // mutate(`/books/${bookId}`, book => {
+  // const updatedBook = await axios.put(`/api/books/${bookId}`, data);
 
   // return a form to enter author, title and isbn
   return (
