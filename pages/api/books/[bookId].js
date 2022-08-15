@@ -5,11 +5,23 @@ const baseUrl = process.env.NEXT_PUBLIC_BACKEND;
 const backendFetcher = new Fetcher(null, `${baseUrl}/api/v1`);
 
 export default async function handler(req, res) {
-  //   if (req.method === 'POST') {
+  const { bookId } = req.query;
+  if (req.method === "PUT") {
+    // modify book
+    console.log("req.body", req.body);
+    const response = await backendFetcher.update(`/books/${bookId}`, req.body);
+    res.status(200).json({ data: response });
+  }
+
   if (req.method === "GET") {
-    const { bookId } = req.query;
     const response = await backendFetcher.get(`/books/${bookId}`);
-    console.log("response", response);
+    res.status(200).json({ data: response });
+  }
+
+  if (req.method === "DELETE") {
+    // delete book
+    console.log("req.body", req.body);
+    const response = await backendFetcher.remove(`/books/${bookId}`);
     res.status(200).json({ data: response });
   }
 }

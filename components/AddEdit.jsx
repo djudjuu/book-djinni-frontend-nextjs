@@ -71,14 +71,15 @@ const AddEdit = ({ bookId, book, categories }) => {
     // const updateFn = () => axios.post(`${baseUrl}/books`, data);
     // mutate("/books", updateFn);
 
-    await axios.post(`${baseUrl}/books`, data);
+    await axios.post(`/api/books`, data);
     mutate("/books");
   };
 
   // async function to update a book by adding a book to the api
   const updateBook = async (data) => {
     // send post request to api with axios putting title, author, and isbn in the body
-    const updateFn = () => axios.put(`${baseUrl}/books/${bookId}`, data);
+    // const updateFn = () => axios.put(`${baseUrl}/books/${bookId}`, data);
+    const updateFn = () => axios.put(`/api/books/${bookId}`, data);
     mutate(`/books/${bookId}`, updateFn);
   };
 
