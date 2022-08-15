@@ -7,7 +7,7 @@ const BookTable = ({ deleteBook, editBook }) => {
   const { books, error, isLoading } = useBooks();
 
   if (error) {
-    return <Error statusCode={error.status} />;
+    return <div>Error</div>;
   }
 
   if (isLoading) {

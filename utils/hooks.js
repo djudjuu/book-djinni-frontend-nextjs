@@ -1,9 +1,10 @@
-import fetcher from "./fetcher";
 import useSWR from "swr";
+
+const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 // hook to fetch books & categories from the backend
 export const useBooks = () => {
-  const { data, error } = useSWR(`/books`, fetcher);
+  const { data, error } = useSWR(`/api/books`, fetcher);
 
   return {
     books: data?.data || [],
@@ -16,7 +17,7 @@ export const useBook = (id) => {
   if (!id) return { isLoading: false, error: false, book: null };
   // just to redeploy
 
-  const { data, error } = useSWR(`/books/${id}`, fetcher, {
+  const { data, error } = useSWR(`/api/books/${id}`, fetcher, {
     refreshInterval: 5000,
   });
   // log data
@@ -30,7 +31,7 @@ export const useBook = (id) => {
 };
 
 export const useCategories = () => {
-  const { data, error } = useSWR(`/categories`, fetcher, {
+  const { data, error } = useSWR(`/api/categories`, fetcher, {
     refreshInterval: 5000,
   });
 
@@ -53,7 +54,7 @@ export const useCategories = () => {
 };
 
 export const useCategoriesWithBooks = () => {
-  const { data, error } = useSWR(`/categories`, fetcher, {
+  const { data, error } = useSWR(`/api/categories`, fetcher, {
     refreshInterval: 5000,
   });
 

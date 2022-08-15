@@ -16,13 +16,11 @@ const ListBooks = () => {
   // function to push to edit page
   const editBook = (book) => {
     router.push(`/book/edit?id=${book.id}`);
-    mutate("/books");
   };
 
   // function to deleteBook by making a delete request to the api
   const deleteBook = async (book) => {
-    const url = `${baseUrl}/books/${book.id}`;
-    const res = await axios.delete(url);
+    const res = await axios.delete(`/api/books/${book.id}`);
 
     // trigger refetch of books
     mutate("/books");
