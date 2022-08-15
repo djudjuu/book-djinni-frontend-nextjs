@@ -8,19 +8,19 @@ import { useBook } from "utils/hooks";
 
 const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND}/api/v1`;
 
-const AddEdit = ({ bookId, categories }) => {
-  const { book, isLoading, error } = useBook(bookId);
-  console.log("book from hook", book);
+const AddEdit = ({ bookId, book, categories }) => {
+  // const { isLoading, error } = useBook(bookId);
+  // console.log("book from hook", book);
   const { mutate } = useSWRConfig();
   const router = useRouter();
   const isAddMode = !bookId;
 
-  if (isLoading) {
+  if (book === undefined) {
     return <div>Loading...</div>;
   }
-  if (error) {
-    return <div>Error...</div>;
-  }
+  // if (error) {
+  //   return <div>Error...</div>;
+  // }
 
   // yup validation schema for title and author and optional isbn
   const schema = Yup.object().shape({
@@ -87,14 +87,8 @@ const AddEdit = ({ bookId, categories }) => {
 
   // async function to update a book by adding a book to the api
   const updateBook = async (data) => {
-    // send post request to api with axios putting title, author, and isbn in the body
-    // const updateFn = () => axios.put(`${baseUrl}/books/${bookId}`, data);
-    // const updateFn = () => axios.put(`/api/books/${bookId}`, data);
-    // const options = { revalidate: true };
-    // mutate(`/api/books/${bookId}`, updateFn(), options); //, data);
-    // console.log("new data", data);
     await axios.put(`/api/books/${bookId}`, data);
-    mutate(`/api/books/${bookId}`, { ...data }); //, data);
+    mutate(`/api/books/${bookId}`); // , { ...data }); //, data);
     mutate(`/api/books`);
   };
 

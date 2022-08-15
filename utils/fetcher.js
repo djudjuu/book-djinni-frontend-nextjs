@@ -86,3 +86,7 @@ export class Fetcher {
     return this.fetch(url, params, "DELETE");
   }
 }
+
+const baseUrl = process.env.NEXT_PUBLIC_BACKEND;
+// TODO add token & user info to headers
+export const backendFetcher = new Fetcher(null, `${baseUrl}/api/v1`);
