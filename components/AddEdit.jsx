@@ -8,19 +8,15 @@ import { useBook } from "utils/hooks";
 
 const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND}/api/v1`;
 
-const AddEdit = ({ bookId, book, categories }) => {
-  // const { isLoading, error } = useBook(bookId);
-  // console.log("book from hook", book);
-  const { mutate } = useSWRConfig();
+// const AddEdit = ({ book, bookId, categories }) => {
+const AddEdit = ({ categories }) => {
   const router = useRouter();
+  const bookId = router.query.id;
   const isAddMode = !bookId;
 
-  if (book === undefined) {
-    return <div>Loading...</div>;
-  }
-  // if (error) {
-  //   return <div>Error...</div>;
-  // }
+  const { book, isLoading, error } = useBook(bookId);
+  // console.log("book from hook", book);
+  const { mutate } = useSWRConfig();
 
   // yup validation schema for title and author and optional isbn
   const schema = Yup.object().shape({
@@ -92,10 +88,13 @@ const AddEdit = ({ bookId, book, categories }) => {
     mutate(`/api/books`);
   };
 
-  // mutate(`/books/${bookId}`, book => {
-  // const updatedBook = await axios.put(`/api/books/${bookId}`, data);
+  if (book === undefined || isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>Error...</div>;
+  }
 
-  // return a form to enter author, title and isbn
   return (
     <div>
       <h1>{isAddMode ? "Add a new book" : "Edit book"}</h1>

@@ -1,15 +1,17 @@
 // write component called Play extending from react.component that fetches some server side props
 // and renders a simple div with those props
 import React, { Fragment, useState } from "react";
+import { backendFetcher } from "utils/fetcher";
 import { useRouter } from "next/router";
 import Layout from "components/Layout";
 import FilterCard from "components/FilterCard";
 // import { useEffect, useState } from "react";
 import { useBooks, useCategoriesWithBooks } from "utils/hooks";
+import { SWRConfig } from "swr";
 
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND;
 
-function Play() {
+function Play({ fallback }) {
   const { books, error: booksError, isLoading: booksLoading } = useBooks();
   const { categories, categoriesError, categoriesLoading } =
     useCategoriesWithBooks();
@@ -57,42 +59,59 @@ function Play() {
   };
 
   return (
-    <Layout>
-      <div>
-        <div>Engaged Djinni image </div>
-        {/* Step1: Select Filter Category */}
-        <Fragment>
-          <h2>What categories would you like to filter for?</h2>
-          <span>(order matters too)</span>
-          <ul>
-            {Object.values(categories)
-              .sort(sortCategories)
-              .map((category) => (
-                <li key={category.name}>
-                  <button
-                    onClick={() => toggleSelection(category.name)}
-                    //{isSelected(category) ? "red" : "green"}
-                  >
-                    {" "}
-                    {category.name} {isSelected(category.name) ? "✅" : ""}
-                  </button>
-                </li>
-              ))}
-          </ul>
-        </Fragment>
-        {filters.length > 0 && (
+    <SWRConfig value={{ fallback }}>
+      <Layout>
+        <div>
+          <div>Engaged Djinni image </div>
+          {/* Step1: Select Filter Category */}
           <Fragment>
-            <span>
-              If you want to change the order, just click the toggle the buttons
-              above to remove and add the categories again.
-            </span>
+            <h2>What categories would you like to filter for?</h2>
+            <span>(order matters too)</span>
+            <ul>
+              {Object.values(categories)
+                .sort(sortCategories)
+                .map((category) => (
+                  <li key={category.name}>
+                    <button
+                      onClick={() => toggleSelection(category.name)}
+                      //{isSelected(category) ? "red" : "green"}
+                    >
+                      {" "}
+                      {category.name} {isSelected(category.name) ? "✅" : ""}
+                    </button>
+                  </li>
+                ))}
+            </ul>
           </Fragment>
-        )}
-        {/* Step2: Choose Filter Values */}
-        <FilterCard categories={filters} allBooks={books} />
-      </div>
-    </Layout>
+          {filters.length > 0 && (
+            <Fragment>
+              <span>
+                If you want to change the order, just click the toggle the
+                buttons above to remove and add the categories again.
+              </span>
+            </Fragment>
+          )}
+          {/* Step2: Choose Filter Values */}
+          <FilterCard categories={filters} allBooks={books} />
+        </div>
+      </Layout>
+    </SWRConfig>
   );
 }
 
 export default Play;
+
+export async function getStaticProps() {
+  // `getStaticProps` is executed on the server side.
+  const books = await backendFetcher.get(`/books`);
+  const categories = await backendFetcher.get(`/categories`);
+  console.log("prefetched", books, categories);
+  return {
+    props: {
+      fallback: {
+        "/api/books": books,
+        "/api/categories": categories,
+      },
+    },
+  };
+}
