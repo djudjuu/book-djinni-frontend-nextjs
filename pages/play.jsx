@@ -104,13 +104,14 @@ export default Play;
 export async function getStaticProps() {
   // `getStaticProps` is executed on the server side.
   const books = await backendFetcher.get(`/books`);
-  const categories = await backendFetcher.get(`/categories`);
-  console.log("prefetched", books, categories);
+  // const categories = await backendFetcher.get(`/categories`);
+  // console.log("prefetched", books, categories || "no categories");
+  console.log("prefetched", books);
   return {
     props: {
       fallback: {
         "/api/books": books,
-        "/api/categories": categories,
+        // "/api/categories": categories,
       },
     },
   };
