@@ -1,19 +1,9 @@
 import Table from "rc-table";
 import router from "next/router";
 import { useBooks } from "utils/hooks";
+import { useEffect } from "react";
 
-// component to present all books in a table
-const BookTable = ({ deleteBook, editBook }) => {
-  const { books, error, isLoading } = useBooks();
-
-  if (error) {
-    return <div>Error</div>;
-  }
-
-  if (isLoading) {
-    return <div> loading...</div>;
-  }
-
+const BookTable = ({ books }) => {
   const columns = [
     { title: "Title", dataIndex: "title", key: "title" },
     { title: "Author", dataIndex: "author", key: "author" },
@@ -21,8 +11,20 @@ const BookTable = ({ deleteBook, editBook }) => {
     { title: "Categories", dataIndex: "categories", key: "categories" },
     { title: "Actions", dataIndex: "actions", key: "actions" },
   ];
-  // log books to console for debugging
-  // console.log("books", books);
+
+  const editBook = (book) => {
+    router.push(`/book/edit?id=${book.id}`);
+  };
+
+  // function to deleteBook by making a delete request to the api
+  const deleteBook = async (book) => {
+    const res = await axios.delete(`/api/books/${book.id}`);
+
+    if (res.status === 200) {
+      // redirect to /book
+      router.push("/book");
+    }
+  };
 
   const data = books.map((book) => ({
     key: book.id,

@@ -6,25 +6,26 @@ import { useRouter } from "next/router";
 import Layout from "components/Layout";
 import FilterCard from "components/FilterCard";
 // import { useEffect, useState } from "react";
-import { useBooks, useCategoriesWithBooks } from "utils/hooks";
+import {
+  useBooks,
+  useCategoriesWithBooks,
+  getUniqueCategoryValues,
+  removeBooksFromCategories,
+} from "utils/hooks";
 import { SWRConfig } from "swr";
 
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND;
 
-function Play({ fallback }) {
-  const { books, error: booksError, isLoading: booksLoading } = useBooks();
-  const { categories, categoriesError, categoriesLoading } =
-    useCategoriesWithBooks();
-
+function Play({ books, error, isLoading, categories }) {
   const [filters, setFilters] = useState([]);
 
   // if categories are loading, show loading message
-  if (categoriesLoading || booksLoading) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
   // if error, render error message
-  if (booksError || categoriesError) {
+  if (error) {
     return <div>Error</div>;
   }
 
@@ -59,16 +60,17 @@ function Play({ fallback }) {
   };
 
   return (
-    <SWRConfig value={{ fallback }}>
-      <Layout>
-        <div>
-          <div>Engaged Djinni image </div>
-          {/* Step1: Select Filter Category */}
-          <Fragment>
-            <h2>What categories would you like to filter for?</h2>
-            <span>(order matters too)</span>
-            <ul>
-              {Object.values(categories)
+    // <SWRConfig value={{ fallback }}>
+    <Layout>
+      <div>
+        <div>Engaged Djinni image </div>
+        {/* Step1: Select Filter Category */}
+        <Fragment>
+          <h2>What categories would you like to filter for?</h2>
+          <span>(order matters too)</span>
+          <ul>
+            {categories &&
+              Object.values(categories)
                 .sort(sortCategories)
                 .map((category) => (
                   <li key={category.name}>
@@ -81,38 +83,63 @@ function Play({ fallback }) {
                     </button>
                   </li>
                 ))}
-            </ul>
+          </ul>
+        </Fragment>
+        {filters.length > 0 && (
+          <Fragment>
+            <span>
+              If you want to change the order, just click the toggle the buttons
+              above to remove and add the categories again.
+            </span>
           </Fragment>
-          {filters.length > 0 && (
-            <Fragment>
-              <span>
-                If you want to change the order, just click the toggle the
-                buttons above to remove and add the categories again.
-              </span>
-            </Fragment>
-          )}
-          {/* Step2: Choose Filter Values */}
-          <FilterCard categories={filters} allBooks={books} />
-        </div>
-      </Layout>
-    </SWRConfig>
+        )}
+        {/* Step2: Choose Filter Values */}
+        <FilterCard categories={filters} allBooks={books} />
+      </div>
+    </Layout>
+    // </SWRConfig>
   );
 }
 
 export default Play;
 
-export async function getStaticProps() {
-  // `getStaticProps` is executed on the server side.
-  const books = await backendFetcher.get(`/books`);
-  // const categories = await backendFetcher.get(`/categories`);
-  // console.log("prefetched", books, categories || "no categories");
-  console.log("prefetched", books);
-  return {
-    props: {
-      fallback: {
-        "/api/books": books,
-        // "/api/categories": categories,
+// export async function getStaticProps() {
+//   // `getStaticProps` is executed on the server side.
+//   const books = await backendFetcher.get(`/books`);
+//   const categories = await backendFetcher.get(`/categories`);
+//   return {
+//     props: {
+//       fallback: {
+//         "/api/books": books,
+//         "/api/categories": getUniqueCategoryValues(categories),
+//       },
+//     },
+//   };
+// }
+
+// getting serverside props is faster here, as playing never changes what is rendered
+
+export async function getServerSideProps() {
+  // get books and categories from backend and inject into props
+  try {
+    const books = await backendFetcher.get(`/books`);
+    const categories = await backendFetcher.get(`/categories`);
+    return {
+      props: {
+        books,
+        error: false,
+        isLoading: !books || !categories,
+        // pass only names and possible values of categories to client side
+        categories: getUniqueCategoryValues(categories),
       },
-    },
-  };
+    };
+    // catch error and return error props
+  } catch (error) {
+    return {
+      props: {
+        error: true,
+        isLoading: !books || !categories,
+      },
+    };
+  }
 }

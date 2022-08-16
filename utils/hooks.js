@@ -36,18 +36,9 @@ export const useCategories = () => {
   });
 
   const categoriesWithBooks = data?.data || [];
-  // categories from this endpoint also have a list of books that fit them, so
-  // remove key "books" from all objects in categoriesWithBooks
-  const categories = categoriesWithBooks
-    // .filter((category) => category.books && category.books.length > 0)
-    .map((category) => {
-      delete category.books;
-      return category;
-    })
-    .sort((a, b) => a.name.localeCompare(b.name));
 
   return {
-    categories,
+    categories: removeBooksFromCategories(categoriesWithBooks),
     categoriesLoading: !error && !data,
     categoriesError: error,
   };
@@ -59,26 +50,39 @@ export const useCategoriesWithBooks = () => {
   });
 
   const categoriesWithBooks = data?.data || [];
+  return {
+    categories: getUniqueCategoryValues(categoriesWithBooks),
+    categoriesLoading: !error && !data,
+    categoriesError: error,
+  };
+};
+
+export const removeBooksFromCategories = (categories) => {
+  return categories
+    .map((category) => {
+      delete category.books;
+      return category;
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
+};
+
+export const getUniqueCategoryValues = (categories) => {
   const categoryNames = [
     ...new Set(
-      categoriesWithBooks
+      categories
         .filter((x) => x.books && x.books.length > 0)
         .map((item) => item.name)
     ),
   ];
   // for name in categoryNames ad all unique values for that name to categories object
-  let categories = {};
+  let categoriesObject = {};
   categoryNames.forEach((name) => {
-    categories[name] = {
+    categoriesObject[name] = {
       name,
-      values: categoriesWithBooks
+      values: categories
         .filter((item) => item.name === name)
         .map((item) => item.value),
     };
   });
-  return {
-    categories,
-    categoriesLoading: !error && !data,
-    categoriesError: error,
-  };
+  return categoriesObject;
 };

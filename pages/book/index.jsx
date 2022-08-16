@@ -7,54 +7,51 @@ import axios from "axios";
 import Error from "../_error";
 import { useBooks } from "utils/hooks";
 import useSWR, { useSWRConfig, SWRConfig } from "swr";
+import { useEffect, useState } from "react";
 
-const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND}/api/v1`;
-
-const ListBooks = ({ fallback }) => {
-  const { mutate } = useSWRConfig();
+const ListBooks = ({ books }) => {
   const router = useRouter();
 
-  // function to push to edit page
-  const editBook = (book) => {
-    router.push(`/book/edit?id=${book.id}`);
-  };
-
-  // function to deleteBook by making a delete request to the api
-  const deleteBook = async (book) => {
-    const res = await axios.delete(`/api/books/${book.id}`);
-
-    // trigger refetch of books
-    mutate("/api/books");
-    if (res.status === 200) {
-      // redirect to /book
-      router.push("/book");
-    }
-  };
-
   return (
-    <SWRConfig value={{ fallback }}>
-      <Layout>
-        {/* <Link as={"/add"} href="/book/edit"> */}
-        <Link href="/book/edit">
-          <a>Add a new book</a>
-        </Link>
-        <BookTable editBook={editBook} deleteBook={deleteBook} />
-      </Layout>
-    </SWRConfig>
+    <Layout>
+      {/* <Link as={"/add"} href="/book/edit"> */}
+      <Link href="/book/edit">
+        <a>Add a new book</a>
+      </Link>
+      <BookTable books={books} />
+    </Layout>
   );
 };
 
 export default ListBooks;
 
-// is executed on the server side.
-// preload the books that will be used inside the booktable
-export async function getStaticProps() {
-  const books = await backendFetcher.get(`/books`);
-  return {
-    props: {
-      fallback: {
-        "/api/books": books,
+// alternative: instead of using the bookHook, use serverside props....not sure which is faster
+export async function getServerSideProps({ req, res, query }) {
+  try {
+    const books = await backendFetcher.get(`/books`);
+    return {
+      props: {
+        books,
+        error: false,
       },
-    },
-  };
+    };
+  } catch (error) {
+    // console.log("err", error);
+    return {
+      redirect: {
+        destination: "/error",
+        permanent: false,
+      },
+    };
+  }
 }
+
+// code to reload serverside props via router
+// const refreshData = () => {
+//   router.replace(router.asPath);
+//   setIsRefreshing(true);
+// };
+
+// useEffect(() => {
+//   setIsRefreshing(false);
+// }, [books]);
