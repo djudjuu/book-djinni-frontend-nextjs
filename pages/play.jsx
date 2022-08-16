@@ -69,7 +69,7 @@ function Play({ books, error, isLoading, categories }) {
             {/* <div>Engaged Djinni image </div> */}
             {/* Step1: Select Filter Category */}
             <Heading as="h3" size="md">
-              What categories would you like to filter for?
+              What categories would you like to filter with?
             </Heading>
             <HStack>
               {categories &&

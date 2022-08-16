@@ -3,6 +3,7 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import { useColorMode } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { Image } from "@chakra-ui/react";
 import {
   Flex,
   Center,
@@ -28,13 +29,30 @@ export default ({ children }) => {
         <Link href="/">
           <a>Home</a>
         </Link>
-        <Link href="/about">
-          <a>About</a>
+
+        <Link href="/play">
+          <a href="/play">
+            <img
+              width="90px"
+              // height="50px"
+              src={
+                colorMode === "light" ? "/lamp_dark_1.svg" : "lamp_light.svg"
+              }
+              alt="Rub!"
+            />
+            {/* <img src="lamp_light.svg" alt="Rub!" /> */}
+          </a>
         </Link>
-        <Button onClick={toggleColorMode} bg="transparent">
-          {" "}
-          {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-        </Button>
+        <Box>
+          <Link href="/about">
+            <a>About</a>
+          </Link>
+
+          <Button onClick={toggleColorMode} bg="transparent">
+            {" "}
+            {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+          </Button>
+        </Box>
       </Flex>
       <Center>{children}</Center>
       <footer className={styles.footer}>powered by magic & mate</footer>
