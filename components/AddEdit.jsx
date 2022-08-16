@@ -14,7 +14,6 @@ const AddEdit = ({ bookId, categories }) => {
 
   const { book, isLoading, error } = useBook(bookId);
   const { mutate } = useSWRConfig();
-
   // yup validation schema for title and author and optional isbn
   const schema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
@@ -62,8 +61,6 @@ const AddEdit = ({ bookId, categories }) => {
   }, [isSubmitSuccessful, formState]);
 
   const onSubmit = async (data) => {
-    // log data to console
-    // console.log("data", JSON.stringify(data));
     if (isAddMode) addBook(data);
     else updateBook(data);
   };
@@ -76,8 +73,17 @@ const AddEdit = ({ bookId, categories }) => {
 
   // async function to update a book by adding a book to the api
   const updateBook = async (data) => {
-    await axios.put(`/api/books/${bookId}`, data);
-    mutate(`/api/books/${bookId}`); // , { ...data }); //, data);
+    const updateFn = () => axios.put(`/api/books/${bookId}`, data);
+
+    const updatedBook = {
+      ...book,
+      categories: data.categories,
+      title: data.title,
+      author: data.author,
+      isbn: data.isbn,
+    };
+
+    mutate(`/api/books/${bookId}`, updateFn, { optimisticData: updatedBook });
     // mutate(`/api/books`);
   };
 
