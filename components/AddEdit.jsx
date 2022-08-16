@@ -84,7 +84,7 @@ const AddEdit = ({ bookId, categories }) => {
     };
 
     mutate(`/api/books/${bookId}`, updateFn, { optimisticData: updatedBook });
-    mutate(`/api/books`);
+    // mutate(`/api/books`);
   };
 
   if (isLoading) {
