@@ -8,7 +8,7 @@ import { useBook } from "utils/hooks";
 
 const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND}/api/v1`;
 
-const AddEdit = ({ book, bookId, categories }) => {
+const AddEdit = ({ book, bookId, categories, updateBook }) => {
   const router = useRouter();
   const isAddMode = !bookId;
 
@@ -67,9 +67,9 @@ const AddEdit = ({ book, bookId, categories }) => {
     await axios.post(`/api/books`, data);
   };
 
-  const updateBook = async (data) => {
-    await axios.put(`/api/books/${bookId}`, data);
-  };
+  // const updateBook = async (data) => {
+  //   await axios.put(`/api/books/${bookId}`, data);
+  // };
 
   return (
     <div>

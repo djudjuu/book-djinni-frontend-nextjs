@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import AddEdit from "components/AddEdit";
 import Layout from "components/Layout";
 import axios from "axios";
@@ -8,29 +9,47 @@ import { backendFetcher } from "utils/fetcher";
 
 // component that adds a book by making a post request to the api
 function Book({ bookId, book, categories, fallback, error }) {
+  // TODO some loading indication somewhere
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const router = useRouter();
+
+  // trick to refetch the props taken from
+  // https://www.joshwcomeau.com/nextjs/refreshing-server-side-props/
+  const refreshData = () => {
+    // router.replace(router.asPath);
+    router.replace("/book");
+    setIsRefreshing(true);
+  };
+
+  useEffect(() => {
+    setIsRefreshing(false);
+  }, [book]);
+
+  const updateBook = async (data) => {
+    await axios.put(`/api/books/${bookId}`, data);
+    refreshData();
+  };
+
   return (
     <Layout>
-      <AddEdit bookId={bookId} book={book} categories={categories} />
+      <AddEdit
+        bookId={bookId}
+        book={book}
+        categories={categories}
+        updateBook={updateBook}
+      />
     </Layout>
   );
 }
 
 export default Book;
 
-// fallback for categories loaded with SWR-hook
-// export async function getStaticProps() {
-//   const categories = await backendFetcher.get(`/categories`);
-//   return {
-//     props: {
-//       fallback: {
-//         "/api/categories": categories,
-//       },
-//     },
-//   };
-// }
-
-// alternative: instead of using the bookHook, use serverside props....not sure which is faster
 export async function getServerSideProps({ req, res, query }) {
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=3, stale-while-revalidate=59"
+  );
+
   const bookId = query.id;
   if (!bookId) {
     return { props: { book: null, bookId: null } };
