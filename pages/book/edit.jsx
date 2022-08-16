@@ -10,11 +10,11 @@ import { SWRConfig } from "swr";
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND;
 
 // component that adds a book by making a post request to the api
-function Book({ bookId, book, categories, fallback, error }) {
+function Book({ bookId, categories, fallback, error }) {
   // function Book({ fallback, error }) {
   return (
     <Layout>
-      <AddEdit bookId={bookId} book={book} categories={categories} />
+      <AddEdit bookId={bookId} categories={categories} />
     </Layout>
   );
 }
@@ -37,14 +37,12 @@ export default Book;
 export async function getServerSideProps({ req, res, query }) {
   const bookId = query.id;
   if (!bookId) {
-    return { props: { book: null, bookId: null } };
+    return { props: { bookId: null } };
   }
   try {
-    const book = await backendFetcher.get(`/books/${bookId}`);
     const categories = await backendFetcher.get(`/categories`);
     return {
       props: {
-        book,
         bookId,
         categories: removeBooksFromCategories(categories),
         error: false,

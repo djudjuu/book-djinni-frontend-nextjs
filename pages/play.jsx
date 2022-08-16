@@ -103,22 +103,6 @@ function Play({ books, error, isLoading, categories }) {
 
 export default Play;
 
-// export async function getStaticProps() {
-//   // `getStaticProps` is executed on the server side.
-//   const books = await backendFetcher.get(`/books`);
-//   const categories = await backendFetcher.get(`/categories`);
-//   return {
-//     props: {
-//       fallback: {
-//         "/api/books": books,
-//         "/api/categories": getUniqueCategoryValues(categories),
-//       },
-//     },
-//   };
-// }
-
-// getting serverside props is faster here, as playing never changes what is rendered
-
 export async function getServerSideProps() {
   // get books and categories from backend and inject into props
   try {

@@ -1,10 +1,12 @@
 import Table from "rc-table";
 import router from "next/router";
 import { useBooks } from "utils/hooks";
+import { useSWRConfig } from "swr";
 
 // component to present all books in a table
-const BookTable = ({ deleteBook, editBook }) => {
+const BookTable = () => {
   const { books, error, isLoading } = useBooks();
+  const { mutate } = useSWRConfig();
 
   if (error) {
     return <div>Error</div>;
@@ -13,6 +15,23 @@ const BookTable = ({ deleteBook, editBook }) => {
   if (isLoading) {
     return <div> loading...</div>;
   }
+
+  // function to push to edit page
+  const editBook = (book) => {
+    router.push(`/book/edit?id=${book.id}`);
+  };
+
+  // function to deleteBook by making a delete request to the api
+  const deleteBook = async (book) => {
+    const res = await axios.delete(`/api/books/${book.id}`);
+
+    // trigger refetch of books
+    mutate("/api/books");
+    if (res.status === 200) {
+      // redirect to /book
+      router.push("/book");
+    }
+  };
 
   const columns = [
     { title: "Title", dataIndex: "title", key: "title" },
