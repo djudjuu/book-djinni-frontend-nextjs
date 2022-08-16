@@ -9,7 +9,12 @@
     "start": "next start -H 0.0.0.0 -p ${PORT:-8080}"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.0.8",
+    "@chakra-ui/react": "^2.2.8",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
     "axios": "^0.27.2",
+    "framer-motion": "^6",
     "next": "12.1.6",
     "rc-table": "^7.25.0",
     "react": "18.2.0",
