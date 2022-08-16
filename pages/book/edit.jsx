@@ -8,16 +8,16 @@ import { removeBooksFromCategories } from "utils/hooks";
 import { backendFetcher } from "utils/fetcher";
 
 // component that adds a book by making a post request to the api
-function Book({ bookId, book, categories, fallback, error }) {
-  // TODO some loading indication somewhere
+function Book({ bookId, book, categories }) {
+  // TODO some loading indication somewhere e.g. in Layout
   const [isRefreshing, setIsRefreshing] = useState(false);
   const router = useRouter();
 
   // trick to refetch the props taken from
   // https://www.joshwcomeau.com/nextjs/refreshing-server-side-props/
   const refreshData = () => {
-    // router.replace(router.asPath);
-    router.replace("/book");
+    router.replace(router.asPath);
+    // router.replace("/book");
     setIsRefreshing(true);
   };
 

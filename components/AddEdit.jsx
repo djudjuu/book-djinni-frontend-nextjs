@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import axios from "axios";
@@ -53,7 +54,7 @@ const AddEdit = ({ book, bookId, categories, updateBook }) => {
       if (isAddMode) {
         reset(defaultValues);
       }
-      router.push("/book");
+      // router.push("/book");
     }
   }, [isSubmitSuccessful, formState]);
 
@@ -131,7 +132,12 @@ const AddEdit = ({ book, bookId, categories, updateBook }) => {
             </div>
           ))}
         {errors?.categories && <p>{errors.categories.message}</p>}
-        <button type="submit"> {isAddMode ? "Add" : "Edit"}</button>
+        <button type="submit"> {isAddMode ? "Add Book" : "Save"}</button>
+        <Link href="/book">
+          <button>
+            <a>back</a>
+          </button>
+        </Link>
       </form>
     </div>
   );
