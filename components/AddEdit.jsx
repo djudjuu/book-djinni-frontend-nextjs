@@ -8,14 +8,11 @@ import { useBook } from "utils/hooks";
 
 const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND}/api/v1`;
 
-// const AddEdit = ({ book, bookId, categories }) => {
-const AddEdit = ({ categories }) => {
+const AddEdit = ({ book, bookId, categories }) => {
   const router = useRouter();
-  const bookId = router.query.id;
   const isAddMode = !bookId;
 
-  const { book, isLoading, error } = useBook(bookId);
-  // console.log("book from hook", book);
+  // const { book, isLoading, error } = useBook(bookId);
   const { mutate } = useSWRConfig();
 
   // yup validation schema for title and author and optional isbn
@@ -78,22 +75,22 @@ const AddEdit = ({ categories }) => {
     // mutate("/api/books", updateFn);
 
     await axios.post(`/api/books`, data);
-    mutate("/api/books");
+    // mutate("/api/books");
   };
 
   // async function to update a book by adding a book to the api
   const updateBook = async (data) => {
     await axios.put(`/api/books/${bookId}`, data);
-    mutate(`/api/books/${bookId}`); // , { ...data }); //, data);
-    mutate(`/api/books`);
+    // mutate(`/api/books/${bookId}`); // , { ...data }); //, data);
+    // mutate(`/api/books`);
   };
 
-  if (book === undefined || isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>Error...</div>;
-  }
+  // if (book === undefined || isLoading) {
+  //   return <div>Loading...</div>;
+  // }
+  // if (error) {
+  //   return <div>Error...</div>;
+  // }
 
   return (
     <div>
@@ -159,8 +156,6 @@ const AddEdit = ({ categories }) => {
       </form>
     </div>
   );
-
-  //   return <div>addmode {isAddMode ? "yes" : "no"}</div>;
 };
 
 export default AddEdit;
