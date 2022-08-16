@@ -1,5 +1,6 @@
 // write component called Play extending from react.component that fetches some server side props
 // and renders a simple div with those props
+import { Box, HStack, Flex, Center, Heading } from "@chakra-ui/react";
 import React, { Fragment, useState } from "react";
 import { backendFetcher } from "utils/fetcher";
 import { useRouter } from "next/router";
@@ -62,42 +63,40 @@ function Play({ books, error, isLoading, categories }) {
   return (
     // <SWRConfig value={{ fallback }}>
     <Layout>
-      <div>
-        <div>Engaged Djinni image </div>
-        {/* Step1: Select Filter Category */}
-        <Fragment>
-          <h2>What categories would you like to filter for?</h2>
-          <span>(order matters too)</span>
-          <ul>
-            {categories &&
-              Object.values(categories)
-                .sort(sortCategories)
-                .map((category) => (
-                  <li key={category.name}>
-                    <button
-                      onClick={() => toggleSelection(category.name)}
-                      //{isSelected(category) ? "red" : "green"}
-                    >
-                      {" "}
-                      {category.name} {isSelected(category.name) ? "✅" : ""}
-                    </button>
-                  </li>
-                ))}
-          </ul>
-        </Fragment>
-        {filters.length > 0 && (
-          <Fragment>
-            <span>
-              If you want to change the order, just click the toggle the buttons
-              above to remove and add the categories again.
-            </span>
-          </Fragment>
-        )}
-        {/* Step2: Choose Filter Values */}
-        <FilterCard categories={filters} allBooks={books} />
-      </div>
+      <Center>
+        <Flex align="center">
+          <Box justifyContent="center">
+            {/* <div>Engaged Djinni image </div> */}
+            {/* Step1: Select Filter Category */}
+            <Heading as="h3" size="md">
+              What categories would you like to filter for?
+            </Heading>
+            <HStack>
+              {categories &&
+                Object.values(categories)
+                  .sort(sortCategories)
+                  .map((category, index) => {
+                    const selected = isSelected(category.name);
+                    return (
+                      <Box key={category.name}>
+                        <Box
+                          onClick={() => toggleSelection(category.name)}
+                          bg={selected ? "green.100" : "grey.200"}
+                        >
+                          {selected ? `${index + 1}:` : ""}
+                          {category.name}
+                          {/* {isSelected(category.name) ? "✅" : ""} */}
+                        </Box>
+                      </Box>
+                    );
+                  })}
+            </HStack>
+            {/* Step2: Choose Filter Values */}
+            <FilterCard categories={filters} allBooks={books} />
+          </Box>
+        </Flex>
+      </Center>
     </Layout>
-    // </SWRConfig>
   );
 }
 

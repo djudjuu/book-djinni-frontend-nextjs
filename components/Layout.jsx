@@ -5,6 +5,7 @@ import { useColorMode } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import {
   Flex,
+  Center,
   Box,
   Button,
   Stack,
@@ -35,7 +36,7 @@ export default ({ children }) => {
           {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
         </Button>
       </Flex>
-      <Box alignContent="flex">{children}</Box>
+      <Center>{children}</Center>
       <footer className={styles.footer}>powered by magic & mate</footer>
     </div>
   );
