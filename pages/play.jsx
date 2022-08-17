@@ -1,6 +1,14 @@
 // write component called Play extending from react.component that fetches some server side props
 // and renders a simple div with those props
-import { Box, HStack, Flex, Center, Heading } from "@chakra-ui/react";
+import {
+  Button,
+  Box,
+  Text,
+  HStack,
+  Flex,
+  Center,
+  Heading,
+} from "@chakra-ui/react";
 import React, { Fragment, useState } from "react";
 import { backendFetcher } from "utils/fetcher";
 import { useRouter } from "next/router";
@@ -63,7 +71,7 @@ function Play({ books, error, isLoading, categories }) {
   return (
     // <SWRConfig value={{ fallback }}>
     <Layout>
-      <Center>
+      <Center width="90%" flexWrap={["auto"]}>
         <Flex align="center">
           <Box justifyContent="center">
             {/* <div>Engaged Djinni image </div> */}
@@ -71,22 +79,23 @@ function Play({ books, error, isLoading, categories }) {
             <Heading as="h3" size="md">
               What categories would you like to filter with?
             </Heading>
-            <HStack>
+            <HStack justify="center" m={2}>
               {categories &&
                 Object.values(categories)
                   .sort(sortCategories)
                   .map((category, index) => {
                     const selected = isSelected(category.name);
                     return (
-                      <Box key={category.name}>
-                        <Box
-                          onClick={() => toggleSelection(category.name)}
-                          bg={selected ? "green.100" : "grey.200"}
-                        >
+                      <Box
+                        key={category.name}
+                        // as="button"
+                        onClick={() => toggleSelection(category.name)}
+                        // bg={selected ? "green.400" : "purple.200"}
+                      >
+                        <Button colorScheme={selected ? "green" : "purple"}>
                           {selected ? `${index + 1}:` : ""}
                           {category.name}
-                          {/* {isSelected(category.name) ? "✅" : ""} */}
-                        </Box>
+                        </Button>
                       </Box>
                     );
                   })}

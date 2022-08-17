@@ -13,8 +13,10 @@ import {
 const FinalBooks = ({ books }) => {
   return (
     <Box>
-      <Text>These are the books you have selected:</Text>
-      <HStack justify="center">
+      <Text>
+        Aha! Check out {books.length > 1 ? "these books" : "this book"}:
+      </Text>
+      <HStack justify="center" flex={["auto"]}>
         {books.map((book) => (
           <BookCard key={book.id} book={book} />
         ))}
@@ -80,12 +82,14 @@ const FilterCard = ({ allBooks, categories }) => {
     <HStack>
       {categoryToShow.values.map((value) => {
         const bookCount = countBooksOfCategory(categoryToShow.name, value);
+        const selected = choices.includes(value);
         return bookCount > 0 ? (
           <Button
             key={value}
             onClick={() => toggleSelection(value)}
-            bg={choices.includes(value) ? "green.200" : "grey.100"}
-            color={choices.includes(value) ? "white" : "black"}
+            // bg={selected ? "green.200" : "purple.300"}
+            // color={selected ? "white" : "black"}
+            colorScheme={selected ? "green" : "purple"}
           >
             {value} ({bookCount})
           </Button>
