@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   const response = await fetch(url);
   const data = await response.json();
   // check if the data object has a key with the isbn number
-  if (data[`ISBN:${isbn}`]) {
+  if (data && data[`ISBN:${isbn}`]) {
     // if it does, return the data object that is under the isbn number
     res.status(200).json(data[`ISBN:${isbn}`]);
   } else {

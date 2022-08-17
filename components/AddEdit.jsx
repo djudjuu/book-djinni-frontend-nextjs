@@ -115,14 +115,23 @@ const AddEdit = ({ book, bookId, categories, updateBook }) => {
     console.log("isbn", isbn);
 
     // const { data } = await axios.get(`/api/books/isbn?isbn=${isbn}`);
-    const { data } = await axios.get(`/api/books/isbn/${isbn}`);
-    console.log("data", data);
-    setValue("title", data.title);
-    // combine all authors from authors array into a single string
-    setValue("author", combineAuthors(data.authors));
-
-    setFetching(false);
-    setFetched(true);
+    try {
+      const { data, status } = await axios.get(`/api/books/isbn/${isbn}`);
+      console.log("data", data);
+      console.log("status", status);
+      if (status === 200) {
+        console.log("data", data);
+        setValue("title", data.title);
+        // combine all authors from authors array into a single string
+        setValue("author", combineAuthors(data.authors));
+        setFetching(false);
+        setFetched(true);
+      }
+    } catch (error) {
+      alert("ISBN not found");
+      setFetching(false);
+      setFetched(false);
+    }
   };
 
   // regex for isbn
