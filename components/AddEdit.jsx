@@ -68,6 +68,7 @@ const AddEdit = ({ book, bookId, categories, updateBook }) => {
   const watchIsbn = watch("isbn");
   const [fetching, setFetching] = useState(false);
   const [fetched, setFetched] = useState(false);
+  const [updated, setUpdated] = useState(false);
 
   // useEffect to reset form when isSubmitSuccessful is true
   useEffect(() => {
@@ -79,10 +80,22 @@ const AddEdit = ({ book, bookId, categories, updateBook }) => {
     }
   }, [isSubmitSuccessful, formState]);
 
+  // effect to reset updated state after 1 second
+  useEffect(() => {
+    if (updated) {
+      setTimeout(() => {
+        setUpdated(false);
+      }, 2000);
+    }
+  }, [updated]);
+
   const onSubmit = async (data) => {
     // log data to console
     if (isAddMode) addBook(data);
-    else updateBook(data);
+    else {
+      updateBook(data);
+      setUpdated(true);
+    }
   };
 
   const addBook = async (data) => {
@@ -199,15 +212,18 @@ const AddEdit = ({ book, bookId, categories, updateBook }) => {
               </div>
             ))}
         {errors?.categories && <p>{errors.categories.message}</p>}
-        <Button colorScheme="purple" type="submit">
-          {formState.isSubmitting ? (
-            <Spinner />
-          ) : isAddMode ? (
-            "Add Book"
-          ) : (
-            "Save"
-          )}
-        </Button>
+
+        {/* refactor this */}
+        {updated && (
+          <Button colorScheme="purple">
+            {!isAddMode ? "Updated" : "Added"}
+          </Button>
+        )}
+        {!updated && (
+          <Button colorScheme="purple" type="submit">
+            {!updated && formState.isSubmitting ? <Spinner /> : "Save"}
+          </Button>
+        )}
       </form>
     </Box>
   );
