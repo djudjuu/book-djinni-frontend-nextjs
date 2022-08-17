@@ -36,7 +36,7 @@ export default ({ children }) => {
               width="90px"
               // height="50px"
               src={
-                colorMode === "light" ? "/lamp_dark_1.svg" : "lamp_light.svg"
+                colorMode === "light" ? "/lamp_dark_1.svg" : "lamp_light_1.svg"
               }
               alt="Rub!"
             />

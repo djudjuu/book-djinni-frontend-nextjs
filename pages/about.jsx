@@ -5,7 +5,7 @@ import { Box, Center, Heading, Text } from "@chakra-ui/react";
 const About = () => (
   <Layout>
     <Center>
-      <Box textAlign="center">
+      <Box textAlign="center" width="60%">
         <Heading>About</Heading>
         <Text>
           You would like to read something cool, but don't know which book to
