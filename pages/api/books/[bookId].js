@@ -6,6 +6,7 @@ const backendFetcher = new Fetcher(null, `${baseUrl}/api/v1`);
 
 export default async function handler(req, res) {
   const { bookId } = req.query;
+  // log isbn and bookId to console
   if (req.method === "PUT") {
     // modify book
     console.log("req.body", req.body);

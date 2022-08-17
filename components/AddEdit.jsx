@@ -54,14 +54,20 @@ const AddEdit = ({ book, bookId, categories, updateBook }) => {
     handleSubmit,
     errors,
     setValue,
+    watch,
     reset,
     formState,
-    formState: { isSubmitSuccessful },
+    getValues,
+    formState: { isSubmitSuccessful, dirtyFields },
   } = useForm({
     validationSchema: schema,
     mode: "onChange",
     defaultValues: defaultValues,
   });
+
+  const watchIsbn = watch("isbn");
+  const [fetching, setFetching] = useState(false);
+  const [fetched, setFetched] = useState(false);
 
   // useEffect to reset form when isSubmitSuccessful is true
   useEffect(() => {
@@ -84,9 +90,35 @@ const AddEdit = ({ book, bookId, categories, updateBook }) => {
     router.push("/book");
   };
 
-  // const updateBook = async (data) => {
-  //   await axios.put(`/api/books/${bookId}`, data);
-  // };
+  const combineAuthors = (authors) => {
+    return authors.map((author) => author.name).join(", ");
+  };
+
+  const fetchByISBN = async () => {
+    setFetching(true);
+    // make request to /api/books/isbn/:isbn
+    // log isbn
+    const isbn = getValues("isbn");
+    console.log("isbn", isbn);
+
+    // const { data } = await axios.get(`/api/books/isbn?isbn=${isbn}`);
+    const { data } = await axios.get(`/api/books/isbn/${isbn}`);
+    console.log("data", data);
+    setValue("title", data.title);
+    // combine all authors from authors array into a single string
+    setValue("author", combineAuthors(data.authors));
+
+    setFetching(false);
+    setFetched(true);
+  };
+
+  // regex for isbn
+  const isbnPattern =
+    /^(?:ISBN(?:-1[03])?:? )?(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[- ]){4})[- 0-9X]{17}$)(?:97[89][- ]?)?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$/;
+
+  const isValidIsbn = (isbn) => {
+    return isbnPattern.test(isbn);
+  };
 
   return (
     <Box>
@@ -125,11 +157,22 @@ const AddEdit = ({ book, bookId, categories, updateBook }) => {
           <Text width="60px">ISBN:</Text>
           <Input
             name="isbn"
-            {...register("isbn", { required: false })}
+            {...register("isbn", {
+              required: false,
+              pattern: isbnPattern,
+            })}
             defaultValue={isAddMode ? "" : book.isbn}
             placeholder="ISBN (optional)"
             type="text"
           />
+          <Button
+            // disable button if isbn is not valid
+            // isDisabled={!getValues("isbn") || !isbnValid(getValues("isbn"))}
+            disabled={!watchIsbn || !isValidIsbn(watchIsbn)}
+            onClick={() => fetchByISBN(formState.isbn)}
+          >
+            {fetching ? <Spinner /> : fetched ? "again!" : "Fetch"}
+          </Button>
         </HStack>
         {errors?.isbn && <p>{errors.isbn.message}</p>}
         <br />
