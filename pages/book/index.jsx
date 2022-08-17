@@ -8,17 +8,23 @@ import Error from "../_error";
 import { useBooks } from "utils/hooks";
 import useSWR, { useSWRConfig, SWRConfig } from "swr";
 import { useEffect, useState } from "react";
+import LinkButton from "components/LinkButton";
+import { Box } from "@chakra-ui/react";
 
 const ListBooks = ({ books }) => {
   const router = useRouter();
 
   return (
     <Layout>
-      {/* <Link as={"/add"} href="/book/edit"> */}
-      <Link href="/book/edit">
-        <a>Add a new book</a>
-      </Link>
-      <BookTable books={books} />
+      <Box>
+        <Box width="90%" alignItems="right">
+          <LinkButton colorScheme="purple" href="/book/edit">
+            {" "}
+            + Add a new book
+          </LinkButton>
+        </Box>
+        <BookTable books={books} />
+      </Box>
     </Layout>
   );
 };

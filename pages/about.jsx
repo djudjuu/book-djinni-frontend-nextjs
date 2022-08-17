@@ -1,10 +1,20 @@
 import Layout from "components/Layout";
+import { Box, Center, Heading, Text } from "@chakra-ui/react";
 
 // component that renders a simple div
 const About = () => (
   <Layout>
-    <h1>About</h1>
-    <p>This is the about page</p>
+    <Center>
+      <Box textAlign="center" width="60%">
+        <Heading>About</Heading>
+        <Text>
+          You would like to read something cool, but don't know which book to
+          pick? You feel like amazon's recommendations are totally useless? Do
+          not despair! You've come to the right place. Just rub the lamp and let
+          the djinni help you out....
+        </Text>
+      </Box>
+    </Center>
   </Layout>
 );
 

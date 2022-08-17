@@ -1,5 +1,29 @@
 import { Fragment, useEffect, useState } from "react";
 import BookCard from "./BookCard";
+import {
+  Button,
+  Box,
+  HStack,
+  Text,
+  Flex,
+  Center,
+  Heading,
+} from "@chakra-ui/react";
+
+const FinalBooks = ({ books }) => {
+  return (
+    <Box>
+      <Text>
+        Aha! Check out {books.length > 1 ? "these books" : "this book"}:
+      </Text>
+      <HStack justify="center" flex={["auto"]}>
+        {books.map((book) => (
+          <BookCard key={book.id} book={book} />
+        ))}
+      </HStack>
+    </Box>
+  );
+};
 
 const FilterCard = ({ allBooks, categories }) => {
   // if categories is empty, return null
@@ -54,49 +78,46 @@ const FilterCard = ({ allBooks, categories }) => {
   };
 
   // return a list of buttons for each value in the categoryToShow
-  const buttons = categoryToShow.values.map((value) => {
-    const bookCount = countBooksOfCategory(categoryToShow.name, value);
-    return bookCount > 0 ? (
-      <button
-        key={value}
-        onClick={() => toggleSelection(value)}
-        style={{
-          backgroundColor: choices.includes(value) ? "green" : "white",
-          color: choices.includes(value) ? "white" : "black",
-        }}
-      >
-        {value} ({bookCount})
-      </button>
-    ) : null;
-  });
+  const buttons = () => (
+    <HStack>
+      {categoryToShow.values.map((value) => {
+        const bookCount = countBooksOfCategory(categoryToShow.name, value);
+        const selected = choices.includes(value);
+        return bookCount > 0 ? (
+          <Button
+            key={value}
+            onClick={() => toggleSelection(value)}
+            // bg={selected ? "green.200" : "purple.300"}
+            // color={selected ? "white" : "black"}
+            colorScheme={selected ? "green" : "purple"}
+          >
+            {value} ({bookCount})
+          </Button>
+        ) : null;
+      })}
+      ;
+    </HStack>
+  );
   return (
-    <div>
-      <h3>Select by {categoryToShow.name}</h3>
-      <span>You are down to {allBooks.length} books to choose from. </span>
-      <span>So which kind of {categoryToShow.name} would you like? </span>
-      <span>(Choosing more than one is possible too)</span>
-      <div>{buttons}</div>
-      {choices.length > 0 && (
-        <div>
-          {" "}
-          {/* // if nextCategories is empty, we are done */}
-          {nextCategories.length === 0 && (
-            <div>
-              <span>These are the books you have selected:</span>
-              <div>
-                {books.map((book) => (
-                  <BookCard key={book.id} book={book} />
-                ))}
-              </div>
-            </div>
-          )}
-          {/* // if nextCategories is not empty, we need to show the next category */}
-          {nextCategories.length > 0 && (
-            <FilterCard allBooks={books} categories={nextCategories} />
-          )}
-        </div>
-      )}
-    </div>
+    <Center>
+      <Box>
+        {/* <h3>Select by {categoryToShow.name}</h3> */}
+        {/* <span>You are down to {allBooks.length} books to choose from. </span> */}
+        <Text>So which kind of {categoryToShow.name} would you like? </Text>
+        <Center>{buttons()}</Center>
+        {choices.length > 0 && (
+          <div>
+            {" "}
+            {/* // if nextCategories is empty, we are done */}
+            {nextCategories.length === 0 && <FinalBooks books={books} />}
+            {/* // if nextCategories is not empty, we need to show the next category */}
+            {nextCategories.length > 0 && (
+              <FilterCard allBooks={books} categories={nextCategories} />
+            )}
+          </div>
+        )}
+      </Box>
+    </Center>
   );
 };
 

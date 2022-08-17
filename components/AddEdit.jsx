@@ -1,4 +1,19 @@
 import { useRouter } from "next/router";
+import LinkButton from "./LinkButton";
+import {
+  Flex,
+  Spinner,
+  Text,
+  Input,
+  Heading,
+  Center,
+  Box,
+  Button,
+  Stack,
+  VStack,
+  HStack,
+  Title,
+} from "@chakra-ui/react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
@@ -66,6 +81,7 @@ const AddEdit = ({ book, bookId, categories, updateBook }) => {
 
   const addBook = async (data) => {
     await axios.post(`/api/books`, data);
+    router.push("/book");
   };
 
   // const updateBook = async (data) => {
@@ -73,73 +89,84 @@ const AddEdit = ({ book, bookId, categories, updateBook }) => {
   // };
 
   return (
-    <div>
-      <h1>{isAddMode ? "Add a new book" : "Edit book"}</h1>
+    <Box>
+      <HStack justifyContent="space-between">
+        <Heading as="h1">{isAddMode ? "Add a new book" : "Edit book"}</Heading>
+
+        <LinkButton href="/book">back</LinkButton>
+      </HStack>
       <form onSubmit={handleSubmit(onSubmit)} onReset={reset}>
-        <label>Title:</label>
-        <input
-          name="title"
-          {...register("title", { required: true })}
-          defaultValue={isAddMode ? "" : book.title}
-          placeholder="Title"
-          type="text"
-          required
-        />
+        <HStack>
+          <Text width="60px">Title:</Text>
+          <Input
+            name="title"
+            {...register("title", { required: true })}
+            defaultValue={isAddMode ? "" : book.title}
+            placeholder="How to train your dragon"
+            type="text"
+            required
+          />
+        </HStack>
         {errors?.title && <p>{errors.title.message}</p>}
-        <label>Author:</label>
-        <input
-          name="author"
-          {...register("author", { required: true })}
-          defaultValue={isAddMode ? "" : book.author}
-          placeholder="Author"
-          type="text"
-          required
-        />
+        <HStack>
+          <Text width="60px">Author:</Text>
+          <Input
+            name="author"
+            {...register("author", { required: true })}
+            defaultValue={isAddMode ? "" : book.author}
+            placeholder="Ms. Cool Woman"
+            type="text"
+            required
+          />
+        </HStack>
         {errors?.author && <p>{errors.author.message}</p>}
         <br />
-        <label>ISBN:</label>
-        <input
-          name="isbn"
-          {...register("isbn", { required: false })}
-          defaultValue={isAddMode ? "" : book.isbn}
-          placeholder="ISBN (optional)"
-          type="text"
-        />
+        <HStack>
+          <Text width="60px">ISBN:</Text>
+          <Input
+            name="isbn"
+            {...register("isbn", { required: false })}
+            defaultValue={isAddMode ? "" : book.isbn}
+            placeholder="ISBN (optional)"
+            type="text"
+          />
+        </HStack>
         {errors?.isbn && <p>{errors.isbn.message}</p>}
         <br />
-        <label>Categories:</label>
-        {/* // map over categories creating a checkbox for each category, displaying
-      // the category name and value. //when a checkbox is clicked the id of the
-      category should be added or removed from the form data */}
-        {categories
-          // .sort((a, b) => a.name > b.name)
-          .map((category) => (
-            <div key={category.id}>
-              <input
-                name="categories"
-                {...register("categories", { required: false })}
-                type="checkbox"
-                value={category.id}
-                defaultChecked={
-                  isAddMode
-                    ? false
-                    : book.categories?.some((c) => c.id === category.id) ||
-                      false
-                }
-              />
-              {/* <span> {category.name}: {category.value} </span> */}
-              <span> {category.value} </span>
-            </div>
-          ))}
+        <Heading size="md">Categories:</Heading>
+        {categories &&
+          categories
+            // .sort((a, b) => a.name > b.name)
+            .map((category) => (
+              <div key={category.id}>
+                <input
+                  name="categories"
+                  {...register("categories", { required: false })}
+                  type="checkbox"
+                  value={category.id}
+                  defaultChecked={
+                    isAddMode
+                      ? false
+                      : book.categories?.some((c) => c.id === category.id) ||
+                        false
+                  }
+                />
+                {/* <span> {category.name}: {category.value} </span> */}
+                <span> {category.value} </span>
+              </div>
+            ))}
         {errors?.categories && <p>{errors.categories.message}</p>}
-        <button type="submit"> {isAddMode ? "Add Book" : "Save"}</button>
-        <Link href="/book">
-          <button>
-            <a>back</a>
-          </button>
-        </Link>
+        <Button colorScheme="purple" type="submit">
+          {formState.isSubmitting ? (
+            <Spinner />
+          ) : isAddMode ? (
+            "Add Book"
+          ) : (
+            "Save"
+          )}
+        </Button>
       </form>
-    </div>
+    </Box>
   );
 };
 
