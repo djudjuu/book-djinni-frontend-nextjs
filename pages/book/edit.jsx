@@ -50,19 +50,15 @@ export async function getServerSideProps({ req, res, query }) {
     "public, s-maxage=3, stale-while-revalidate=59"
   );
 
-  const bookId = query.id;
-  if (!bookId) {
-    return { props: { book: null, bookId: null } };
-  }
   try {
-    const book = await backendFetcher.get(`/books/${bookId}`);
+    const bookId = query.id;
+    const book = bookId ? await backendFetcher.get(`/books/${bookId}`) : null;
     const categories = await backendFetcher.get(`/categories`);
     return {
       props: {
         book,
-        bookId,
+        bookId: bookId || null,
         categories: removeBooksFromCategories(categories),
-        error: false,
       },
     };
   } catch (error) {

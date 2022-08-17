@@ -1,20 +1,27 @@
 import Layout from "components/Layout";
 import Link from "next/link";
-import { Box } from "@chakra-ui/react";
+import { Flex, HStack, Box, Text } from "@chakra-ui/react";
 
 export default function Home() {
   return (
     <Layout>
-      <Box>
-        <div>Welcome Djinni image </div>
+      <Flex flexWrap="wrap" alignItems="center" justifyContent="center">
         <Link href="/play">
-          <a>Play</a>
+          <Box p={16} m={4} borderWidth={3} rounded="lg">
+            PLAY
+          </Box>
         </Link>
-        <br />
         <Link href="/book">
-          <a>See all Books</a>
+          <Box p={16} m={4} borderWidth={3} rounded="lg">
+            BROWSE
+          </Box>
         </Link>
-      </Box>
+
+        {/* <Text fontSize="xl">Play</Text> */}
+        {/* <Link as="em" href="/book">
+          <Text fontSize="xl">Browse Books</Text>
+        </Link> */}
+      </Flex>
     </Layout>
   );
 }
