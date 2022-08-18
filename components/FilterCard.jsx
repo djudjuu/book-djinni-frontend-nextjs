@@ -40,18 +40,25 @@ const FilterCard = ({ allBooks, categories }) => {
   useEffect(() => {
     // function to filter books based on the choices
     const updateBooks = () => {
-      const newBooks = [];
-      allBooks.forEach((book) => {
-        if (bookMatchesSelectedChoices(book, choices)) {
-          newBooks.push(book);
-        }
-      });
+      let newBooks;
+      // if "any" is chosen, return all books
+      if (choices.includes("any")) {
+        newBooks = allBooks;
+      } else {
+        newBooks = [];
+        allBooks.forEach((book) => {
+          if (bookMatchesSelectedChoices(book, choices)) {
+            newBooks.push(book);
+          }
+        });
+      }
       setBooks(newBooks);
     };
     updateBooks();
   }, [choices]);
 
   const bookIsOfCategory = (book, categoryName, categoryValue) => {
+    if (categoryValue == "any") return true;
     return book.categories.some(
       (c) => c.name === categoryName && c.value === categoryValue
     );
@@ -78,26 +85,30 @@ const FilterCard = ({ allBooks, categories }) => {
   };
 
   // return a list of buttons for each value in the categoryToShow
-  const buttons = () => (
-    <HStack>
-      {categoryToShow.values.map((value) => {
-        const bookCount = countBooksOfCategory(categoryToShow.name, value);
-        const selected = choices.includes(value);
-        return bookCount > 0 ? (
-          <Button
-            key={value}
-            onClick={() => toggleSelection(value)}
-            // bg={selected ? "green.200" : "purple.300"}
-            // color={selected ? "white" : "black"}
-            colorScheme={selected ? "green" : "purple"}
-          >
-            {value} ({bookCount})
-          </Button>
-        ) : null;
-      })}
-      ;
-    </HStack>
-  );
+  // add an "any" value to the values of the categoryToShow
+  const buttons = () => {
+    const values = [...categoryToShow.values, "any"];
+    // log values
+    return (
+      <HStack>
+        {values.map((value) => {
+          const bookCount = countBooksOfCategory(categoryToShow.name, value);
+          const selected = choices.includes(value);
+          return bookCount > 0 ? (
+            <Button
+              key={value}
+              onClick={() => toggleSelection(value)}
+              // bg={selected ? "green.200" : "purple.300"}
+              // color={selected ? "white" : "black"}
+              colorScheme={selected ? "green" : "purple"}
+            >
+              {value} ({bookCount})
+            </Button>
+          ) : null;
+        })}
+      </HStack>
+    );
+  };
   return (
     <Center>
       <Box>
