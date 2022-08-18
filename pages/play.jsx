@@ -4,6 +4,8 @@ import {
   Button,
   Box,
   Text,
+  Wrap,
+  WrapItem,
   HStack,
   Flex,
   Center,
@@ -71,7 +73,7 @@ function Play({ books, error, isLoading, categories }) {
   return (
     // <SWRConfig value={{ fallback }}>
     <Layout>
-      <Center width="90%" flexWrap={["auto"]}>
+      <Center width="90%">
         <Flex align="center">
           <Box justifyContent="center">
             {/* <div>Engaged Djinni image </div> */}
@@ -80,6 +82,8 @@ function Play({ books, error, isLoading, categories }) {
               What categories would you like to filter with?
             </Heading>
             <HStack justify="center" m={2}>
+              {/* <Wrap> */}
+              {/* flex="wrap"> */}
               {categories &&
                 Object.values(categories)
                   .sort(sortCategories)
@@ -99,6 +103,8 @@ function Play({ books, error, isLoading, categories }) {
                       </Box>
                     );
                   })}
+              {/* </Wrap>
+               */}
             </HStack>
             {/* Step2: Choose Filter Values */}
             <FilterCard categories={filters} allBooks={books} />

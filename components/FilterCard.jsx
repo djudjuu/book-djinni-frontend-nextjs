@@ -2,25 +2,27 @@ import { Fragment, useEffect, useState } from "react";
 import BookCard from "./BookCard";
 import {
   Button,
+  Wrap,
+  WrapItem,
+  Spacer,
   Box,
   HStack,
   Text,
   Flex,
   Center,
-  Heading,
 } from "@chakra-ui/react";
 
 const FinalBooks = ({ books }) => {
   return (
     <Box>
-      <Text>
-        Aha! Check out {books.length > 1 ? "these books" : "this book"}:
-      </Text>
-      <HStack justify="center" flex={["auto"]}>
-        {books.map((book) => (
-          <BookCard key={book.id} book={book} />
-        ))}
-      </HStack>
+      <Center>
+        <Text>
+          Aha! Check out {books.length > 1 ? "these books" : "this book"}:
+        </Text>
+      </Center>
+      {books.map((book) => (
+        <BookCard key={book.id} book={book} />
+      ))}
     </Box>
   );
 };
@@ -104,33 +106,52 @@ const FilterCard = ({ allBooks, categories }) => {
     const values = [...categoryToShow.values, "any"];
     // log values
     return (
-      <HStack>
-        {values.map((value) => {
-          const bookCount = countBooksOfCategory(categoryToShow.name, value);
-          const selected = choices.includes(value);
-          return bookCount > 0 ? (
-            <Button
-              key={value}
-              onClick={() => toggleSelection(value)}
-              // bg={selected ? "green.200" : "purple.300"}
-              // color={selected ? "white" : "black"}
-              colorScheme={selected ? "green" : "purple"}
-            >
-              {value === "any" ? randomAny() : value} ({bookCount})
-            </Button>
-          ) : null;
-        })}
-      </HStack>
+      <Flex>
+        <HStack shouldWrapChildren>
+          {values.map((value) => {
+            const bookCount = countBooksOfCategory(categoryToShow.name, value);
+            const selected = choices.includes(value);
+            return bookCount > 0 ? (
+              <Button
+                key={value}
+                onClick={() => toggleSelection(value)}
+                // bg={selected ? "green.200" : "purple.300"}
+                // color={selected ? "white" : "black"}
+                colorScheme={selected ? "green" : "purple"}
+              >
+                {value === "any" ? randomAny() : value} ({bookCount})
+              </Button>
+            ) : null;
+          })}
+        </HStack>
+      </Flex>
     );
   };
+
+  const randomQuestion = (name) => {
+    // return one of many ways to ask the question
+    const questions = [
+      `What kind of ${name} do you want?`,
+      `What type of ${name} do you want?`,
+      `${name}! Choose!`,
+      `Aha! So now, choose a ${name}!`,
+    ];
+    return questions[Math.floor(Math.random() * questions.length)];
+  };
+
   return (
-    <Center>
-      <Flex>
+    <Center mt={5}>
+      <Flex wrap="wrap">
         <Box>
           {/* <h3>Select by {categoryToShow.name}</h3> */}
           {/* <span>You are down to {allBooks.length} books to choose from. </span> */}
-          <Text>So which kind of {categoryToShow.name} would you like? </Text>
-          <Center>{buttons()}</Center>
+          <Center>
+            <Text fontSize={"xl"}>{randomQuestion(categoryToShow.name)}</Text>
+          </Center>
+          <Spacer />
+          <Center flex="wrap" flexDirection={"row"}>
+            {buttons()}
+          </Center>
           {choices.length > 0 && (
             <div>
               {" "}
