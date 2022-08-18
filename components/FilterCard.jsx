@@ -1,5 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import BookCard from "./BookCard";
+// import { BookShow, FinalBooks } from "./BookShow";
+import { randomAny, randomQuestion } from "utils/randomness";
 import {
   Button,
   Wrap,
@@ -37,6 +39,8 @@ const FilterCard = ({ allBooks, categories }) => {
   // save all chosen values in an array in state
   const [choices, setChoices] = useState([]);
   const [books, setBooks] = useState(allBooks);
+  const [randomAnyTerm, setRandomAnyTerm] = useState(randomAny());
+  const [question, setQuestion] = useState(randomQuestion(categoryToShow.name));
 
   // every time a filter is added or removed, we need to update the matching books
   useEffect(() => {
@@ -86,20 +90,6 @@ const FilterCard = ({ allBooks, categories }) => {
       .length;
   };
 
-  // function to randomly select a way of saying "any"
-  const randomAny = () => {
-    const anyOptions = [
-      "all of 'em",
-      "everything",
-      "all of it",
-      "any",
-      "I don't care",
-      "whatever",
-      "yes!",
-    ];
-    return anyOptions[Math.floor(Math.random() * anyOptions.length)];
-  };
-
   // return a list of buttons for each value in the categoryToShow
   // add an "any" value to the values of the categoryToShow
   const buttons = () => {
@@ -119,24 +109,13 @@ const FilterCard = ({ allBooks, categories }) => {
                 // color={selected ? "white" : "black"}
                 colorScheme={selected ? "green" : "purple"}
               >
-                {value === "any" ? randomAny() : value} ({bookCount})
+                {value === "any" ? randomAnyTerm : value} ({bookCount})
               </Button>
             ) : null;
           })}
         </HStack>
       </Flex>
     );
-  };
-
-  const randomQuestion = (name) => {
-    // return one of many ways to ask the question
-    const questions = [
-      `What kind of ${name} do you want?`,
-      `What type of ${name} do you want?`,
-      `${name}! Choose!`,
-      `Aha! So now, choose a ${name}!`,
-    ];
-    return questions[Math.floor(Math.random() * questions.length)];
   };
 
   return (
@@ -146,7 +125,7 @@ const FilterCard = ({ allBooks, categories }) => {
           {/* <h3>Select by {categoryToShow.name}</h3> */}
           {/* <span>You are down to {allBooks.length} books to choose from. </span> */}
           <Center>
-            <Text fontSize={"xl"}>{randomQuestion(categoryToShow.name)}</Text>
+            <Text fontSize={"xl"}>{question}</Text>
           </Center>
           <Spacer />
           <Center flex="wrap" flexDirection={"row"}>
@@ -156,7 +135,7 @@ const FilterCard = ({ allBooks, categories }) => {
             <div>
               {" "}
               {/* // if nextCategories is empty, we are done */}
-              {nextCategories.length === 0 && <FinalBooks books={books} />}
+              {nextCategories.length === 0 && <FinalBooks books={books} />}{" "}
               {/* // if nextCategories is not empty, we need to show the next category */}
               {nextCategories.length > 0 && (
                 <FilterCard allBooks={books} categories={nextCategories} />
