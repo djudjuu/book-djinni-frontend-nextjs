@@ -9,6 +9,15 @@ import {
   Heading,
 } from "@chakra-ui/react";
 
+// function to show only the first 25 letters of the title
+const shortenTitle = (title) => {
+  if (title.length > 22) {
+    return title.substring(0, 25) + "...";
+  } else {
+    return title;
+  }
+};
+
 const BookCard = ({ book }) => {
   const title = book.title.replace(/\s/g, "+");
   const author = book.author.replace(/\s/g, "+");
@@ -26,7 +35,9 @@ const BookCard = ({ book }) => {
       border="1px"
     >
       <VStack>
-        <Text fontSize="lg">{book.title}</Text>
+        <Text fontSize="lg" title={book.title}>
+          {shortenTitle(book.title)}{" "}
+        </Text>
         <Text fontSize="s" as="em">
           by {book.author}
         </Text>
