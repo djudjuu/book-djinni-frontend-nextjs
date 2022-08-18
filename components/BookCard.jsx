@@ -18,11 +18,11 @@ const BookCard = ({ book }) => {
       // display="flex"
       alignItems="center"
       justifyContent="space-between"
-      borderRadius="md"
+      // borderRadius="md"
       m="5px"
       p="5px"
       // bg="gray.100"
-      borderColor="black"
+      // borderColor="black"
       border="1px"
     >
       <VStack>
@@ -30,9 +30,9 @@ const BookCard = ({ book }) => {
         <Text fontSize="s" as="em">
           by {book.author}
         </Text>
-        <Text as="abbr" fontSize="xs">
+        {/* <Text as="abbr" fontSize="xs">
           ISBN: {book.isbn}
-        </Text>
+        </Text> */}
         <Button color>
           <a href={libgenlink} target="_blank">
             View on Libgen

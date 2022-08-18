@@ -13,21 +13,7 @@ import {
   Flex,
   Center,
 } from "@chakra-ui/react";
-
-const FinalBooks = ({ books }) => {
-  return (
-    <Box>
-      <Center>
-        <Text>
-          Aha! Check out {books.length > 1 ? "these books" : "this book"}:
-        </Text>
-      </Center>
-      {books.map((book) => (
-        <BookCard key={book.id} book={book} />
-      ))}
-    </Box>
-  );
-};
+import { BookCarousel } from "./BookCarousel";
 
 const FilterCard = ({ allBooks, categories }) => {
   // if categories is empty, return null
@@ -135,7 +121,9 @@ const FilterCard = ({ allBooks, categories }) => {
             <div>
               {" "}
               {/* // if nextCategories is empty, we are done */}
-              {nextCategories.length === 0 && <FinalBooks books={books} />}{" "}
+              {nextCategories.length === 0 && (
+                <BookCarousel books={books} />
+              )}{" "}
               {/* // if nextCategories is not empty, we need to show the next category */}
               {nextCategories.length > 0 && (
                 <FilterCard allBooks={books} categories={nextCategories} />
