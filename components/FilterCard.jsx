@@ -1,29 +1,19 @@
 import { Fragment, useEffect, useState } from "react";
 import BookCard from "./BookCard";
+// import { BookShow, FinalBooks } from "./BookShow";
+import { randomAny, randomQuestion } from "utils/randomness";
 import {
   Button,
+  Wrap,
+  WrapItem,
+  Spacer,
   Box,
   HStack,
   Text,
   Flex,
   Center,
-  Heading,
 } from "@chakra-ui/react";
-
-const FinalBooks = ({ books }) => {
-  return (
-    <Box>
-      <Text>
-        Aha! Check out {books.length > 1 ? "these books" : "this book"}:
-      </Text>
-      <HStack justify="center" flex={["auto"]}>
-        {books.map((book) => (
-          <BookCard key={book.id} book={book} />
-        ))}
-      </HStack>
-    </Box>
-  );
-};
+import { BookCarousel } from "./BookCarousel";
 
 const FilterCard = ({ allBooks, categories }) => {
   // if categories is empty, return null
@@ -35,23 +25,32 @@ const FilterCard = ({ allBooks, categories }) => {
   // save all chosen values in an array in state
   const [choices, setChoices] = useState([]);
   const [books, setBooks] = useState(allBooks);
+  const [randomAnyTerm, setRandomAnyTerm] = useState(randomAny());
+  const [question, setQuestion] = useState(randomQuestion(categoryToShow.name));
 
   // every time a filter is added or removed, we need to update the matching books
   useEffect(() => {
     // function to filter books based on the choices
     const updateBooks = () => {
-      const newBooks = [];
-      allBooks.forEach((book) => {
-        if (bookMatchesSelectedChoices(book, choices)) {
-          newBooks.push(book);
-        }
-      });
+      let newBooks;
+      // if "any" is chosen, return all books
+      if (choices.includes("any")) {
+        newBooks = allBooks;
+      } else {
+        newBooks = [];
+        allBooks.forEach((book) => {
+          if (bookMatchesSelectedChoices(book, choices)) {
+            newBooks.push(book);
+          }
+        });
+      }
       setBooks(newBooks);
     };
     updateBooks();
   }, [choices]);
 
   const bookIsOfCategory = (book, categoryName, categoryValue) => {
+    if (categoryValue == "any") return true;
     return book.categories.some(
       (c) => c.name === categoryName && c.value === categoryValue
     );
@@ -78,45 +77,61 @@ const FilterCard = ({ allBooks, categories }) => {
   };
 
   // return a list of buttons for each value in the categoryToShow
-  const buttons = () => (
-    <HStack>
-      {categoryToShow.values.map((value) => {
-        const bookCount = countBooksOfCategory(categoryToShow.name, value);
-        const selected = choices.includes(value);
-        return bookCount > 0 ? (
-          <Button
-            key={value}
-            onClick={() => toggleSelection(value)}
-            // bg={selected ? "green.200" : "purple.300"}
-            // color={selected ? "white" : "black"}
-            colorScheme={selected ? "green" : "purple"}
-          >
-            {value} ({bookCount})
-          </Button>
-        ) : null;
-      })}
-      ;
-    </HStack>
-  );
+  // add an "any" value to the values of the categoryToShow
+  const buttons = () => {
+    const values = [...categoryToShow.values, "any"];
+    // log values
+    return (
+      <Flex>
+        <HStack shouldWrapChildren>
+          {values.map((value) => {
+            const bookCount = countBooksOfCategory(categoryToShow.name, value);
+            const selected = choices.includes(value);
+            return bookCount > 0 ? (
+              <Button
+                key={value}
+                onClick={() => toggleSelection(value)}
+                // bg={selected ? "green.200" : "purple.300"}
+                // color={selected ? "white" : "black"}
+                colorScheme={selected ? "green" : "purple"}
+              >
+                {value === "any" ? randomAnyTerm : value} ({bookCount})
+              </Button>
+            ) : null;
+          })}
+        </HStack>
+      </Flex>
+    );
+  };
+
   return (
-    <Center>
-      <Box>
-        {/* <h3>Select by {categoryToShow.name}</h3> */}
-        {/* <span>You are down to {allBooks.length} books to choose from. </span> */}
-        <Text>So which kind of {categoryToShow.name} would you like? </Text>
-        <Center>{buttons()}</Center>
-        {choices.length > 0 && (
-          <div>
-            {" "}
-            {/* // if nextCategories is empty, we are done */}
-            {nextCategories.length === 0 && <FinalBooks books={books} />}
-            {/* // if nextCategories is not empty, we need to show the next category */}
-            {nextCategories.length > 0 && (
-              <FilterCard allBooks={books} categories={nextCategories} />
-            )}
-          </div>
-        )}
-      </Box>
+    <Center mt={5}>
+      <Flex wrap="wrap">
+        <Box>
+          {/* <h3>Select by {categoryToShow.name}</h3> */}
+          {/* <span>You are down to {allBooks.length} books to choose from. </span> */}
+          <Center>
+            <Text fontSize={"xl"}>{question}</Text>
+          </Center>
+          <Spacer />
+          <Center flex="wrap" flexDirection={"row"}>
+            {buttons()}
+          </Center>
+          {choices.length > 0 && (
+            <div>
+              {" "}
+              {/* // if nextCategories is empty, we are done */}
+              {nextCategories.length === 0 && (
+                <BookCarousel books={books} />
+              )}{" "}
+              {/* // if nextCategories is not empty, we need to show the next category */}
+              {nextCategories.length > 0 && (
+                <FilterCard allBooks={books} categories={nextCategories} />
+              )}
+            </div>
+          )}
+        </Box>
+      </Flex>
     </Center>
   );
 };

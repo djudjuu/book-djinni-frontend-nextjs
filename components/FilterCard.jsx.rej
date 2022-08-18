@@ -1,0 +1,26 @@
+diff a/components/FilterCard.jsx b/components/FilterCard.jsx	(rejected hunks)
+@@ -1,5 +1,6 @@
+ import { Fragment, useEffect, useState } from "react";
+ import BookCard from "./BookCard";
++import { BookShow, FinalBooks } from "./BookShow";
+ import {
+   Button,
+   Wrap,
+@@ -100,6 +86,17 @@ const FilterCard = ({ allBooks, categories }) => {
+     return anyOptions[Math.floor(Math.random() * anyOptions.length)];
+   };
+ 
++  const randomQuestion = (name) => {
++    // return one of many ways to ask the question
++    const questions = [
++      `What kind of ${name} do you want?`,
++      `What type of ${name} do you want?`,
++      `${name}! Choose!`,
++      `Aha! So now, choose a ${name}!`,
++    ];
++    return questions[Math.floor(Math.random() * questions.length)];
++  };
++
+   // return a list of buttons for each value in the categoryToShow
+   // add an "any" value to the values of the categoryToShow
+   const buttons = () => {

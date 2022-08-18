@@ -1242,6 +1242,11 @@ caniuse-lite@^1.0.30001332:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001359.tgz#a1c1cbe1c2da9e689638813618b4219acbd4925e"
   integrity sha512-Xln/BAsPzEuiVLgJ2/45IaqD9jShtk3Y33anKb4+yLwQzws3+v6odKfpgES/cDEaZMLzSChpIGdbOYtH9MyuHw==
 
+chakra-framer-carousel@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/chakra-framer-carousel/-/chakra-framer-carousel-0.5.0.tgz#70833b45a78876d084ec5e716ca6ee9929fa9c12"
+  integrity sha512-3Sv4gN20/DtZfaB0u/MYlzDZf+AP3iWYbiEVEcXBgSOYdIFMp4HVFQ201g9QzeOOfRmttq01Q5zW3Kl2JlDsuQ==
+
 chalk@^2.0.0:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.4.2.tgz#cd42541677a54333cf541a49108c1432b44c9424"

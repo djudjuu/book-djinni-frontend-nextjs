@@ -135,11 +135,19 @@ const AddEdit = ({ book, bookId, categories, updateBook }) => {
   };
 
   // regex for isbn
-  const isbnPattern =
+  const isbn10Pattern =
     /^(?:ISBN(?:-1[03])?:? )?(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[- ]){4})[- 0-9X]{17}$)(?:97[89][- ]?)?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$/;
 
+  // regex for isbn-13
+  const isbn13Pattern =
+    /^(?:ISBN(?:-1[03])?:? )?(?=[0-9]{13}$)(?:97[89][- ]?)?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9]$/;
+
   const isValidIsbn = (isbn) => {
+    const isbnPattern =
+      /((978[\--– ])?[0-9][0-9\--– ]{10}[\--– ][0-9xX])|((978)?[0-9]{9}[0-9Xx])/;
     return isbnPattern.test(isbn);
+    // if is isbn-10 or isbn-13 return true
+    // return isbn10Pattern.test(isbn) || isbn13Pattern.test(isbn);
   };
 
   return (
@@ -181,7 +189,7 @@ const AddEdit = ({ book, bookId, categories, updateBook }) => {
             name="isbn"
             {...register("isbn", {
               required: false,
-              pattern: isbnPattern,
+              pattern: isbn10Pattern,
             })}
             defaultValue={isAddMode ? "" : book.isbn}
             placeholder="ISBN (optional)"
