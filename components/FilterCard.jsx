@@ -84,6 +84,20 @@ const FilterCard = ({ allBooks, categories }) => {
       .length;
   };
 
+  // function to randomly select a way of saying "any"
+  const randomAny = () => {
+    const anyOptions = [
+      "all of 'em",
+      "everything",
+      "all of it",
+      "any",
+      "I don't care",
+      "whatever",
+      "yes!",
+    ];
+    return anyOptions[Math.floor(Math.random() * anyOptions.length)];
+  };
+
   // return a list of buttons for each value in the categoryToShow
   // add an "any" value to the values of the categoryToShow
   const buttons = () => {
@@ -102,7 +116,7 @@ const FilterCard = ({ allBooks, categories }) => {
               // color={selected ? "white" : "black"}
               colorScheme={selected ? "green" : "purple"}
             >
-              {value} ({bookCount})
+              {value === "any" ? randomAny() : value} ({bookCount})
             </Button>
           ) : null;
         })}
@@ -111,23 +125,25 @@ const FilterCard = ({ allBooks, categories }) => {
   };
   return (
     <Center>
-      <Box>
-        {/* <h3>Select by {categoryToShow.name}</h3> */}
-        {/* <span>You are down to {allBooks.length} books to choose from. </span> */}
-        <Text>So which kind of {categoryToShow.name} would you like? </Text>
-        <Center>{buttons()}</Center>
-        {choices.length > 0 && (
-          <div>
-            {" "}
-            {/* // if nextCategories is empty, we are done */}
-            {nextCategories.length === 0 && <FinalBooks books={books} />}
-            {/* // if nextCategories is not empty, we need to show the next category */}
-            {nextCategories.length > 0 && (
-              <FilterCard allBooks={books} categories={nextCategories} />
-            )}
-          </div>
-        )}
-      </Box>
+      <Flex>
+        <Box>
+          {/* <h3>Select by {categoryToShow.name}</h3> */}
+          {/* <span>You are down to {allBooks.length} books to choose from. </span> */}
+          <Text>So which kind of {categoryToShow.name} would you like? </Text>
+          <Center>{buttons()}</Center>
+          {choices.length > 0 && (
+            <div>
+              {" "}
+              {/* // if nextCategories is empty, we are done */}
+              {nextCategories.length === 0 && <FinalBooks books={books} />}
+              {/* // if nextCategories is not empty, we need to show the next category */}
+              {nextCategories.length > 0 && (
+                <FilterCard allBooks={books} categories={nextCategories} />
+              )}
+            </div>
+          )}
+        </Box>
+      </Flex>
     </Center>
   );
 };
