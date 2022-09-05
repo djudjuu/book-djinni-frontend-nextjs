@@ -122,6 +122,7 @@ const AddEdit = ({ book, bookId, categories, updateBook }) => {
       if (status === 200) {
         console.log("data", data);
         setValue("title", data.title);
+        setValue("data", {cover_url: data.cover.large, ...data);
         // combine all authors from authors array into a single string
         setValue("author", combineAuthors(data.authors));
         setFetching(false);
