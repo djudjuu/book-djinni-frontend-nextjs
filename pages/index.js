@@ -11,12 +11,12 @@ export default function Home() {
             PLAY
           </Box>
         </Link>
-        <Link href="/book">
+        {/* <Link href="/book">
           <Box p={16} m={4} borderWidth={3} rounded="lg">
-            BROWSE
+            BROWSE (boring!)
           </Box>
         </Link>
-
+ */}
         {/* <Text fontSize="xl">Play</Text> */}
         {/* <Link as="em" href="/book">
           <Text fontSize="xl">Browse Books</Text>
