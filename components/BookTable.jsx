@@ -2,7 +2,7 @@ import Table from "rc-table";
 import router from "next/router";
 import { useBooks } from "utils/hooks";
 import { useEffect } from "react";
-import { Button } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
 import axios from "axios";
 
 const BookTable = ({ books }) => {
@@ -35,17 +35,17 @@ const BookTable = ({ books }) => {
     isbn: book.isbn,
     categories: book.categories.map((category) => category.value).join(", "),
     actions: (
-      <div>
+      <Box>
         <Button onClick={() => editBook(book)}>Edit</Button>
         <Button onClick={() => deleteBook(book)}>Delete</Button>
-      </div>
+      </Box>
     ),
   }));
 
   return (
-    <div>
+    <Box>
       <Table columns={columns} data={data} />
-    </div>
+    </Box>
   );
 };
 

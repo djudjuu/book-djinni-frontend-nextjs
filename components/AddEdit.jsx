@@ -152,7 +152,7 @@ const AddEdit = ({ book, bookId, categories, updateBook }) => {
 
   return (
     <Box>
-      <HStack justifyContent="space-between">
+      <HStack>
         <Heading as="h1">{isAddMode ? "Add a new book" : "Edit book"}</Heading>
 
         <LinkButton href="/book">back</LinkButton>

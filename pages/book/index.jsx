@@ -17,7 +17,7 @@ const ListBooks = ({ books }) => {
   return (
     <Layout>
       <Box>
-        <Box width="90%" alignItems="right">
+        <Box>
           <LinkButton colorScheme="purple" href="/book/edit">
             {" "}
             + Add a new book

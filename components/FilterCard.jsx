@@ -63,10 +63,17 @@ const FilterCard = ({ allBooks, categories }) => {
   };
 
   const toggleSelection = (value) => {
-    if (choices.includes(value)) {
-      setChoices(choices.filter((f) => f !== value));
-    } else {
-      setChoices([...choices, value]);
+    // choosing any should remove all other choices if its not already selected
+    if (value === "any" && !choices.includes("any")) {
+      setChoices(["any"]);
+    }
+    // if the value is already selected, remove it
+    else if (choices.includes(value)) {
+      setChoices(choices.filter((c) => c !== value));
+    }
+    // otherwise, add it and delete any if it exists
+    else {
+      setChoices(choices.filter((c) => c !== "any").concat(value));
     }
   };
 
@@ -82,57 +89,53 @@ const FilterCard = ({ allBooks, categories }) => {
     const values = [...categoryToShow.values, "any"];
     // log values
     return (
-      <Flex>
-        <HStack shouldWrapChildren>
-          {values.map((value) => {
-            const bookCount = countBooksOfCategory(categoryToShow.name, value);
-            const selected = choices.includes(value);
-            return bookCount > 0 ? (
+      <Wrap spacing="10px" justify="center">
+        {values.map((value) => {
+          const bookCount = countBooksOfCategory(categoryToShow.name, value);
+          const selected = choices.includes(value);
+          return bookCount > 0 ? (
+            <WrapItem>
               <Button
+                mr={2}
+                d="flex"
+                mt={2}
                 key={value}
                 onClick={() => toggleSelection(value)}
-                // bg={selected ? "green.200" : "purple.300"}
-                // color={selected ? "white" : "black"}
                 colorScheme={selected ? "green" : "purple"}
               >
                 {value === "any" ? randomAnyTerm : value} ({bookCount})
               </Button>
-            ) : null;
-          })}
-        </HStack>
-      </Flex>
+            </WrapItem>
+          ) : null;
+        })}
+      </Wrap>
     );
   };
 
   return (
-    <Center mt={5}>
-      <Flex wrap="wrap">
+    <Box>
+      {/* <h3>Select by {categoryToShow.name}</h3> */}
+      {/* <span>You are down to {allBooks.length} books to choose from. </span> */}
+      <Center>
+        <Text fontSize="xl" fontWeight="semibold">
+          {question}
+        </Text>
+      </Center>
+      {/* <Center flex="wrap" flexDirection={"row"}> */}
+      {buttons()}
+      {/* </Center> */}
+      {choices.length > 0 && (
         <Box>
-          {/* <h3>Select by {categoryToShow.name}</h3> */}
-          {/* <span>You are down to {allBooks.length} books to choose from. </span> */}
-          <Center>
-            <Text fontSize={"xl"}>{question}</Text>
-          </Center>
-          <Spacer />
-          <Center flex="wrap" flexDirection={"row"}>
-            {buttons()}
-          </Center>
-          {choices.length > 0 && (
-            <div>
-              {" "}
-              {/* // if nextCategories is empty, we are done */}
-              {nextCategories.length === 0 && (
-                <BookCarousel books={books} />
-              )}{" "}
-              {/* // if nextCategories is not empty, we need to show the next category */}
-              {nextCategories.length > 0 && (
-                <FilterCard allBooks={books} categories={nextCategories} />
-              )}
-            </div>
+          {" "}
+          {/* // if nextCategories is empty, we are done */}
+          {nextCategories.length === 0 ? (
+            <BookCarousel books={books} />
+          ) : (
+            <FilterCard allBooks={books} categories={nextCategories} />
           )}
         </Box>
-      </Flex>
-    </Center>
+      )}
+    </Box>
   );
 };
 

@@ -3,6 +3,7 @@
 import {
   Button,
   Box,
+  VStack,
   Text,
   Wrap,
   WrapItem,
@@ -73,46 +74,55 @@ function Play({ books, error, isLoading, categories }) {
   return (
     // <SWRConfig value={{ fallback }}>
     <Layout>
-      <Center width="90%">
-        <Flex align="center">
-          <Box justifyContent="center">
-            {/* <div>Engaged Djinni image </div> */}
-            {/* Step1: Select Filter Category */}
+      <Flex as="div" w="full" h="full" justifyContent="space-around">
+        {/* <div>Engaged Djinni image </div> */}
+        {/* Step1: Select Filter Category */}
+        <VStack>
+          <Box w={{ base: "95%", md: "90%" }}>
             <Center>
               <Heading as="h3" size="md">
                 What categories would you like to filter with?
               </Heading>
             </Center>
-            <HStack justify="center" m={2}>
-              {/* <Wrap> */}
-              {/* flex="wrap"> */}
-              {categories &&
-                Object.values(categories)
-                  .sort(sortCategories)
-                  .map((category, index) => {
-                    const selected = isSelected(category.name);
-                    return (
-                      <Box
-                        key={category.name}
-                        // as="button"
-                        onClick={() => toggleSelection(category.name)}
-                        // bg={selected ? "green.400" : "purple.200"}
-                      >
-                        <Button colorScheme={selected ? "green" : "purple"}>
-                          {selected ? `${index + 1}:` : ""}
-                          {category.name}
-                        </Button>
-                      </Box>
-                    );
-                  })}
-              {/* </Wrap>
-               */}
-            </HStack>
-            {/* Step2: Choose Filter Values */}
-            <FilterCard categories={filters} allBooks={books} />
           </Box>
-        </Flex>
-      </Center>
+          {/* <Box
+            // width={{ base: "100%", md: "90%" }}
+            d="flex"
+            alignItems="center"
+            justifyContent="center"
+            flexWrap="wrap"
+          > */}
+          <Wrap justify="center">
+            {categories &&
+              Object.values(categories)
+                .sort(sortCategories)
+                .map((category, index) => {
+                  const selected = isSelected(category.name);
+                  return (
+                    <WrapItem
+                      key={category.name}
+                      display="flex"
+                      // as="button"
+                      onClick={() => toggleSelection(category.name)}
+                      // bg={selected ? "green.400" : "purple.200"}
+                    >
+                      <Button
+                        d="flex"
+                        w="100px"
+                        colorScheme={selected ? "green" : "purple"}
+                      >
+                        {selected ? `${index + 1}: ` : ""}
+                        {category.name}
+                      </Button>
+                    </WrapItem>
+                  );
+                })}
+          </Wrap>
+          {/* </Box> */}
+          {/* Step2: Choose Filter Values */}
+          <FilterCard categories={filters} allBooks={books} />
+        </VStack>
+      </Flex>
     </Layout>
   );
 }
@@ -151,10 +161,11 @@ export async function getServerSideProps() {
     };
     // catch error and return error props
   } catch (error) {
+    console.log("er", error);
     return {
       props: {
         error: true,
-        isLoading: !books || !categories,
+        isLoading: false,
       },
     };
   }
