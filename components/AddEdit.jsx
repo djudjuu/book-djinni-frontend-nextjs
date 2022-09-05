@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import LinkButton from "./LinkButton";
 import {
   Flex,
+  Spacer,
   Spinner,
   Text,
   Input,
@@ -10,6 +11,7 @@ import {
   Box,
   Button,
   Stack,
+  Image,
   VStack,
   HStack,
   Title,
@@ -21,12 +23,14 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import useSWR, { useSWRConfig } from "swr";
 import { useBook } from "utils/hooks";
+import { EditIcon } from "@chakra-ui/icons";
 
 const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND}/api/v1`;
 
 const AddEdit = ({ book, bookId, categories, updateBook }) => {
   const router = useRouter();
   const isAddMode = !bookId;
+  const [newImageDesired, setNewImageDesired] = useState(false);
 
   const { mutate } = useSWRConfig();
 
@@ -65,7 +69,12 @@ const AddEdit = ({ book, bookId, categories, updateBook }) => {
     defaultValues: defaultValues,
   });
 
+  const [coverImage, setCoverImage] = useState(
+    book?.cover_image || book.data?.openlibData?.cover?.large || null
+  );
+
   const watchIsbn = watch("isbn");
+  const watchCover = watch("data.cover_url");
   const [fetching, setFetching] = useState(false);
   const [fetched, setFetched] = useState(false);
   const [updated, setUpdated] = useState(false);
@@ -89,12 +98,20 @@ const AddEdit = ({ book, bookId, categories, updateBook }) => {
     }
   }, [updated]);
 
+  // effect to set coverImage to state when the formdata.cover_url changes
+  // useEffect(() => {
+  //   if (getValues("cover_url")) {
+  //     setCoverImage(getValues("cover_url"));
+  //   }
+  // }, [getValues("cover_url")]);
+
   const onSubmit = async (data) => {
     // log data to console
     if (isAddMode) addBook(data);
     else {
       updateBook(data);
       setUpdated(true);
+      setNewImageDesired(false);
     }
   };
 
@@ -151,13 +168,44 @@ const AddEdit = ({ book, bookId, categories, updateBook }) => {
     // return isbn10Pattern.test(isbn) || isbn13Pattern.test(isbn);
   };
 
+  const hasImage = book?.data?.cover_url || getValues("data.cover_url");
+  console.log("watchCover", watchCover);
+
   return (
     <Box>
-      <HStack>
-        <Heading as="h1">{isAddMode ? "Add a new book" : "Edit book"}</Heading>
-
+      <Flex justifyContent="space-between">
+        <Heading fontSize="3xl">
+          {isAddMode ? "Add a new book" : "Edit book"}
+        </Heading>
+        <Spacer width="15px" />
         <LinkButton href="/book">back</LinkButton>
+      </Flex>
+      <HStack>
+        <Box w="200px" d="flex" h="314px" border="1px" title={book.title}>
+          {hasImage ? (
+            <Image
+              src={watchCover || book.data.cover_url}
+              objectFit="cover"
+              layout="fill"
+              alt={book.title}
+            />
+          ) : (
+            <Text as="kbd"> No Cover Image</Text>
+          )}
+        </Box>
+        <HStack>
+          <Text width="160px">Url of cover image:</Text>
+          <Input
+            {...register("data.cover_url", {
+              required: false,
+            })}
+            defaultValue={isAddMode ? "" : book.data?.cover_url || ""}
+            placeholder={book.data.cover_url}
+            type="text"
+          />
+        </HStack>
       </HStack>
+
       <form onSubmit={handleSubmit(onSubmit)} onReset={reset}>
         <HStack>
           <Text width="60px">Title:</Text>
